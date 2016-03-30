@@ -1,0 +1,505 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Structured General Purpose Assignment
+% LaTeX Template
+%
+% This template has been downloaded from:
+% http://www.latextemplates.com
+%
+% Original author:
+% Ted Pavlic (http://www.tedpavlic.com)
+%
+% Note:
+% The \lipsum[#] commands throughout this template generate dummy text
+% to fill the template out. These commands should all be removed when 
+% writing assignment content.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+% PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\usepackage{fancyhdr} % Required for custom headers
+\usepackage{lastpage} % Required to determine the last page for the footer
+\usepackage{extramarks} % Required for headers and footers
+\usepackage{graphicx} % Required to insert images
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage{amsmath, amsfonts, bm}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[toc,page]{appendix}
+
+% Margins
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in 
+
+\linespread{1.1} % Line spacing
+
+% Set up the header and footer
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName} % Top left header
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle} % Top center header
+\rhead{\firstxmark} % Top right header
+\lfoot{\lastxmark} % Bottom left footer
+\cfoot{} % Bottom center footer
+\rfoot{Page\ \thepage\ of\ \pageref{LastPage}} % Bottom right footer
+\renewcommand\headrulewidth{0.4pt} % Size of the header rule
+\renewcommand\footrulewidth{0.4pt} % Size of the footer rule
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+%----------------------------------------------------------------------------------------
+% DOCUMENT STRUCTURE COMMANDS
+% Skip this unless you know what you're doing
+%----------------------------------------------------------------------------------------
+
+% Header and footer for when a page split occurs within a problem environment
+\newcommand{\enterProblemHeader}[1]{
+  \nobreak\extramarks{#1}{#1 continued on next page\ldots}\nobreak
+  \nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak
+}
+
+% Header and footer for when a page split occurs between problem environments
+\newcommand{\exitProblemHeader}[1]{
+  \nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak
+  \nobreak\extramarks{#1}{}\nobreak
+}
+
+\setcounter{secnumdepth}{0} % Removes default section numbers
+\newcounter{homeworkProblemCounter} % Creates a counter to keep track of the number of problems
+
+\newcommand{\homeworkProblemName}{}
+\newenvironment{homeworkProblem}[1][]{ % Makes a new environment called homeworkProblem which takes 1 argument (custom name) but the default is "Problem #"
+  \stepcounter{homeworkProblemCounter} % Increase counter for number of
+% problems
+  \setcounter{homeworkSectionctr}{0}
+  %\renewcommand{\homeworkProblemName}{#1} % Assign \homeworkProblemName the
+% name of the problem
+  \section{\arabic{homeworkProblemCounter}. #1} %
+  % Make a section in the document with the
+% custom problem count
+  \enterProblemHeader{\homeworkProblemName} % Header and footer within the
+% environment
+}{
+  \exitProblemHeader{\homeworkProblemName} % Header and footer after the
+% environment
+}
+
+\newcommand{\problemAnswer}[1]{ % Defines the problem answer command with the content as the only argument
+  \noindent\textbf{\emph{Answer: }}#1 % Just put a keyword Answer in
+  % bold/italic at the beginning
+}
+
+%\newcommand{\homeworkSectionName}{}
+%\newenvironment{homeworkSection}[1]{ % New environment for sections within
+% homework problems, takes 1 argument - the name of the section
+%  \renewcommand{\homeworkSectionName}{#1} % Assign \homeworkSectionName to the
+% name of the section from the environment argument
+%  \subsection{\homeworkSectionName} % Make a subsection with the custom name
+% of the subsection
+%  \enterProblemHeader{\homeworkProblemName\ [\homeworkSectionName]} % Header
+% and footer within the environment
+%}{
+%  \enterProblemHeader{\homeworkProblemName} % Header and footer after the
+% environment
+%}
+
+\newcounter{homeworkSectionctr}
+\newenvironment{homeworkSection}{
+  \medskip\noindent%         create a vertical offset to previous material
+  \refstepcounter{homeworkSectionctr}% increment the environment's counter
+  \textbf{(\alph{homeworkSectionctr})\ }% or \textbf,.
+}
+
+\newtheorem{theorem}{Theorem}[homeworkProblemCounter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\newenvironment{proof}[1][Proof]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+\newenvironment{definition}[1][Definition]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+
+\newenvironment{example}[1][Example]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+    
+\newenvironment{remark}[1][Remark]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+
+\newcommand{\qed}{
+  \nobreak \ifvmode \relax \else
+  \ifdim\lastskip<1.5em \hskip-\lastskip
+  \hskip1.5em plus0em minus0.5em \fi \nobreak
+  \vrule height0.75em width0.5em depth0.25em\fi
+}
+
+\lstset{
+  frame=single,
+  breaklines=true,
+  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
+}
+   
+%----------------------------------------------------------------------------------------
+% NAME AND CLASS SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\hmwkTitle}{Assignment\ \#1} % Assignment title
+\newcommand{\hmwkDueDate}{Monday, April\ 4,\ 2016} % Due date
+\newcommand{\hmwkClass}{STA\ 208} % Course/class
+\newcommand{\hmwkClassTime}{MW 12:00 - 2:00 P.M.} % Class/lecture time
+\newcommand{\hmwkClassInstructor}{Prof. James Sharpnack} % Teacher/lecturer
+\newcommand{\hmwkAuthorName}{Wenhao Wu} % Your name
+
+%----------------------------------------------------------------------------------------
+% TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{
+  \vspace{2in}
+  \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+  \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}\\
+  \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+  \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{} % Insert date here if you want it to appear below your name
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+  \maketitle
+  
+  %----------------------------------------------------------------------------------------
+  % TABLE OF CONTENTS
+  %----------------------------------------------------------------------------------------
+  
+  %\setcounter{tocdepth}{1} % Uncomment this line if you don't want subsections listed in the ToC
+  
+  \newpage
+  \tableofcontents
+  \newpage
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 1
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}[(Learning paradyms)]
+    Decribe the issues involved in the following learning problems using the
+    terminology that we learned in the first lecture. Provide a sentence or two
+    for each problem.
+      
+    \begin{homeworkSection}
+      A `smart farm' has distributed sensors that detect moisture levels, and
+      the farmers know what are the ideal moisture levels for each plant. They
+      have many controls that adjust the irrigation system and they would like
+      to know what settings produce the most ideal moisture levels.
+      \vspace{10pt}
+      
+      \problemAnswer{
+      
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Astronomers are trying to map the structure of the universe in terms of
+      how galaxies cluster and form topological structures that they call
+      filaments.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+      
+    \begin{homeworkSection}
+      An online ad company wants to determine which of many ads to show each
+      user based on their browser cookies.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      NASA is mapping the strength of the gravitational field on the surface of
+      Mars. They want you to help with determining its values in a grid of
+      locations on the surface from remote sensing measurements.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+  \end{homeworkProblem}
+  %\clearpage
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 2
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}[(Bayes rule)]
+    Consider the classification setting with features
+    $\mathbf{x}\in\mathbb{R}^p$ and response $y \in \{0, 1\}$. Suppose that we
+    know the joint distribution of $P(x, y)$, and the conditional
+    distributions $P(y|x)$, $P(x|y)$ (an unlikely setting, but bear with me).
+      
+    \begin{homeworkSection}
+      Under the Hamming loss, what is the true risk of a classifier $\hat{y}:
+      \mathbb{R}^p \rightarrow \{0, 1\}$? Write it in terms of conditional
+      distributions.
+      \vspace{10pt}
+      
+      \problemAnswer{
+      
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      What is the Bayes rule, i.e. the classifier that minimizes the true risk?
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+      
+    \begin{homeworkSection}
+      Write in one sentence, what is the Bayes rule, as if you needed to
+      describe what the Bayes risk was to someone in an elevator before you
+      reached the lobby.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Prove that the Bayes risk is $1 − P(y = y^*(\mathbf{x})|\mathbf{x})$ where
+      $y^*$ is the Bayes rule.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+  \end{homeworkProblem}
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 3
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}[(Linear Regression)]
+    Suppose that we are in the regression setting, $\mathbf{x}_i \in
+    \mathbb{R}^p , y_i \in \mathbb{R}$ are $n$ pairs drawn iid, let $\mathbf{y}
+    = (y_1,\ldots,y_n)$ and $\mathbf{X}^T = (\mathbf{x}_1 ,\ldots, \mathbf{x}_n
+    )$, and consider the linear regression estimator
+    \begin{align}
+      \hat{\bm{\beta}}:= \arg\min_{\bm{\beta}\in\mathbb{R}^p} \|\mathbf{y} -
+      \mathbf{X}\bm{\beta}\|_2^2.
+      \label{eq:linear_regression}
+    \end{align}
+      
+    \begin{homeworkSection}
+      When is the solution to this program unique? In this case, what is the
+      unique minimizer $\hat{\bm{\beta}}$?
+      \vspace{10pt}
+      
+      \problemAnswer{
+      
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Give an equation that the minimizers satisfy regardless of uniqueness?
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+      
+    \begin{homeworkSection}
+      Given a solution to ~\eqref{eq:linear_regression}, give a reasonable
+      prediction rule $\hat{y}: \mathbb{R}^p \rightarrow \mathbb{R}$.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Suppose that $\mathbb{E}[y_i | \mathbf{x}_i ] = \mathbf{x}_i^T\bm{\beta}$
+      for $i = 1,\ldots, n + 1$. For a new random draw $(\mathbf{x}_{n+1},
+      y_{n+1})$, then what is the bias of $\hat{y}(\mathbf{x}_{n+1})$, i.e.
+      $\mathbb{E}[\hat{y}(\mathbf{x}_{n+1}) - y_{n+1}]$?
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+  \end{homeworkProblem}
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 4
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}[(Simulation and ridge regression.)]
+    \begin{homeworkSection}
+      Simulate $\{\mathbf{x}_i\} ^n_{i=1} \subset \mathbb{R}^p$ with $p = 12$
+      and $n = 200$, iid normal with mean $\mathbf{0}$ and variance
+      $\mathbf{\Sigma}$ such that
+      \begin{align}
+        \Sigma_{j,k}=\rho^{|j-k|},\;j,k = 1,\ldots, p.
+      \end{align}
+      for $0 < \rho < 1$. Draw $\bm{\beta} \in \mathbb{R}^p$ such that
+      $\beta_j$ are iid normal with mean 0 and variance 1, and $y_i$
+      independently normal with mean $\mathbf{x}_i^T\bm{\beta}$ and variance
+      1. Print out your code (not the output), which should consist of functions
+      for generating these objects.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Derive an analytical expression for the solution to ridge regression,
+      \begin{align}
+        \hat{\bm{\beta}}:= \arg\min_{\bm{\beta}\in\mathbb{R}^p} \|\mathbf{y} -
+        \mathbf{X}\bm{\beta}\|_2^2 + \lambda\|\bm{\beta}\|_2^2,
+      \label{eq:linear_regression}
+      \end{align}
+      as a function of $\mathbf{X}, \mathbf{y}, λ$.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+      
+    \begin{homeworkSection}
+      Provide code for solving ridge regression. Use any linear solver you like.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Set $\rho = 0.5$. Simulate the bias of $\hat{\bm{\beta}}$,
+      $\|\mathbb{E}\hat{\bm{\beta}} - \bm{\beta}\|_2^2$, the variance,
+      $\mathbb{E}\|\hat{\bm{\beta}} - \mathbb{E}\hat{\bm{\beta}}\|_2^2$, and the
+      mean square error, $\mathbb{E}\|\hat{\bm{\beta}} - \bm{\beta}\|_2^2$, for
+      many values of $\lambda$. Be sure that you see instances of overfitting
+      and underfitting and can clearly see the point where $\lambda$ is optimal.
+      Plot these curves as functions of $\lambda$ and include your code.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+  \end{homeworkProblem}
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 5
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}[(Airfoil)]
+    Download the airfoil dataset, which is linked in the homework section of the
+    course site. We will focus on predicting the scaled sound pressure, which is
+    the 6th row.
+    \begin{homeworkSection}
+      Set aside a test set at random.
+      \vspace{10pt}
+      
+      \problemAnswer{
+      
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Form the coefficients for ordinary least squares with the training set.
+      Write a function with a new $\mathbf{x}$ and $\hat{\bm{\beta}}$ as
+      arguments and returns the prediction. Use any linear solver/Cholesky
+      decomposition you like.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+      
+    \begin{homeworkSection}
+      Write a function that takes a new $\mathbf{x}, k$, and the training data,
+      and outputs the k-nearest neighbor prediction with Euclidean distance.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Write a function that takes a new $\mathbf{x}$, a bandwidth parameter, and
+      the training data, and outputs the kernel prediction with boxcar kernel
+      and Euclidean distance.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Evaluate your methods on the test set, calculating the test error
+      (empirical risk on the test set). Vary the tuning parameters and plot the
+      test error as a function of the tuning parameters.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Is the best test error a good estimate of the true risk for these methods?
+      Why/why not? What can be done to estimate the true risk?
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+  \end{homeworkProblem}
+  
+  %\newpage
+  %\begin{appendices} 
+  %\end{appendices}
+
+  
+  %----------------------------------------------------------------------------------------
+
+\end{document}

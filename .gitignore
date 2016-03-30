@@ -1,0 +1,13 @@
+# gedit backup file
+*~
+
+# texlipse
+tmp
+*.synctex.gz
+.project
+.texlipse
+.metadata
+raw
+
+# Homework handouts and compiled pdf files
+*.pdf
