@@ -26,10 +26,22 @@
 \usepackage{extramarks} % Required for headers and footers
 \usepackage{graphicx} % Required to insert images
 \usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
-\usepackage{amsmath, amsfonts, bm}
+\usepackage{amsmath, amsfonts, bm, physics}
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage[toc,page]{appendix}
+
+\lstset{
+    %numbers=left,
+    stepnumber=1,    
+    firstnumber=1,
+    numberfirstline=true,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{green}\ttfamily,
+    breaklines=true,
+}
 
 % Margins
 \topmargin=-0.45in
@@ -216,7 +228,15 @@
       \vspace{10pt}
       
       \problemAnswer{
-      
+        This problem can be studied as a supervised learning
+        problem, more specifically, a regression problem. Given a plant, with $p$
+        controls to adjust the mirrigation system, the farmers can try $N$
+        different settings represented by an $N$-by-$p$ matrix $\mathbf{X}$
+        (predictors) and use the sensors to record the observed moisture levels
+        $\mathbf{y}$ (response) and use these data to find a relationship
+        between the moisture level and the irrigation system settings
+        $\hat{y}(\mathbf{x})$ and then solve the inverse problem $\hat{y}(\mathbf{x}_{opt}) =
+        y_{opt}$ where $y_{opt}$ is the known optimal moisture level.
       }
     \end{homeworkSection}
     
@@ -227,8 +247,10 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
-      }
+        This problem can be studied as an unsupervised learning problem. The
+        spacial locations of many galaxies are treated as data, and the how
+        galaxies cluster and form topological structures are closely related to
+        the distributions of the data.}
     \end{homeworkSection}
       
     \begin{homeworkSection}
@@ -237,8 +259,13 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
-      }
+        This problem can be studied as a semi-supervised learning problem.
+        The predictors are the cookies information for each user and the response
+        is the ads that should be shown to the corresponding user. The response
+        can be collected with a ``survey'' on a subset of users asking what are
+        the ads they are interested in and how interested they are. However, not
+        all users will answer the survey and no user can provide a comprehensive
+        list of all the ads they are interested in.}
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -248,8 +275,12 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
-      }
+        This problem can be studied as a supervised learning, regression
+        problem. First NASA needs to measure the strength of the
+        gravitational fields (responses) at $n$ locations (predictors) on the
+        mars suface. With this data one can find a relationship between the 
+        strength of the gravitational fields and the coordinate of a
+        certain location and make predictions on new locations.}
     \end{homeworkSection}
   \end{homeworkProblem}
   %\clearpage
@@ -270,7 +301,19 @@
       \vspace{10pt}
       
       \problemAnswer{
-      
+        \begin{align}
+          R(\hat{y}) &= \mathbb{E}_{\mathbf{x}, y}[1(\hat{y}(\mathbf{x})\not=y)]
+          \notag
+          \\
+          &=
+          \mathbb{E}_{\mathbf{x}}[\mathbb{E}_{y|\mathbf{x}}
+          [1(\hat{y}(\mathbf{x})\not=y)]] \notag \\
+          &= \mathbb{E}_{\mathbf{x}}[P(\hat{y}(\mathbf{x})\not=y|\mathbf{x})]
+          \notag \\
+          &= \int_{\hat{y}(\mathbf{x})=1}P(0|\mathbf{x})p(\mathbf{x})d\mathbf{x}
+          + \int_{\hat{y}(\mathbf{x})=0}P(1|\mathbf{x})p(\mathbf{x})d\mathbf{x}
+        \end{align}
+        where $1(\cdot)$ is the indicator function.
       }
     \end{homeworkSection}
     
@@ -279,8 +322,24 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        We can rewrite the true risk into
+        \begin{align}
+          R(\hat{y}) &= \int_{\hat{y}(\mathbf{x})=1}[P(0|\mathbf{x}) -
+          P(1|\mathbf{x})]p(\mathbf{x})d\mathbf{x} + \int
+          P(1|\mathbf{x})p(\mathbf{x})d\mathbf{x}
+        \end{align}
+        Since the second term on the RHS does not depend on $\hat{y}$, to minimize
+        $R(\hat{y})$, the Bayes rule is
+        \begin{align}
+          \hat{y}(\mathbf{x}) = \left\{
+            \begin{array}{ll}
+              1 & \mbox{if } P(0|\mathbf{x}) < P(1|\mathbf{x}), \\
+              0 & \mbox{otherwise.}
+            \end{array}
+          \right.
+        \end{align}
       }
+      
     \end{homeworkSection}
       
     \begin{homeworkSection}
@@ -290,17 +349,24 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
-      }
+        Bayes rule is the predictor for a supervised learning problem that
+        minimizes the true risk, which is the risk taken expectation over the
+        joint distribution of the predictors and responses $P(\mathbf{x}, y)$}
     \end{homeworkSection}
     
     \begin{homeworkSection}
-      Prove that the Bayes risk is $1 − P(y = y^*(\mathbf{x})|\mathbf{x})$ where
+      Prove that the Bayes risk is $1 - P(y = y^*(\mathbf{x})|\mathbf{x})$ where
       $y^*$ is the Bayes rule.
       \vspace{10pt}
       
       \problemAnswer{
-        
+        The Bayes risk given $\mathbf{x}$ is
+        \begin{align}
+          R(y^*(\mathbf{x})) =
+          \mathbb{E}_{y|\mathbf{x}}[1(y^*(\mathbf{x}) \not= y)]] =
+          P(y^*(\mathbf{x})\not=y|\mathbf{x}) = 1 -
+          P(y^*(\mathbf{x})=y|\mathbf{x})
+        \end{align}
       }
     \end{homeworkSection}
   \end{homeworkProblem}
@@ -325,8 +391,30 @@
       \vspace{10pt}
       
       \problemAnswer{
-      
-      }
+        The stationary condition to minimize the square-error loss function is
+        \begin{align}
+          \pdv{l(\hat{\mathbf{y}},\mathbf{y})}{\bm{\beta}} &=
+          2\mathbf{X}^T(\mathbf{X}\bm{\beta} - \mathbf{y}) = \mathbf{0}
+          \label{eq:stationary}
+        \end{align}
+        i.e. $\mathbf{X}^T\mathbf{X}\bm{\beta} = \mathbf{X}^T\mathbf{y}$. The
+        solution to this program is unique iff $\mathbf{X}$ has a
+        full colummn rank of $p$, or positive definite equivalently, when the
+        unique solution t~\eqref{eq:stationary} is
+        \begin{align}
+          \hat{\bm{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}
+        \end{align} 
+        Since the Hessian matrix $2\mathbf{X}^T\mathbf{X}$ is positive definite
+        in this case, $\hat{\bm{\beta}}$ indeed minnimizes the square loss
+        function.
+        
+        On the other hand, if $\mathbf{X}$ does not have full column rank, then
+        there exists $\Delta\bm{\beta}\not= \mathbf{0}$ such that
+        $\mathbf{X}\Delta\bm{\beta} = \mathbf{0}$. Consequently, if
+        $\hat{\bm{\beta}}$ is a solution that minimizes~\eqref{eq:stationary},
+        then $\hat{\bm{\beta}} + \Delta\bm{\beta} \not= \hat{\bm{\beta}}$
+        results in exactly the same square loss, therefore the solution can not
+        be unique.}
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -334,17 +422,22 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        \eqref{eq:stationary} is the 1st-order necessary condition that the
+        minimizers satisfy regardless of uniqueness.
       }
     \end{homeworkSection}
       
     \begin{homeworkSection}
-      Given a solution to ~\eqref{eq:linear_regression}, give a reasonable
+      Given a solution to~\eqref{eq:linear_regression}, give a reasonable
       prediction rule $\hat{y}: \mathbb{R}^p \rightarrow \mathbb{R}$.
       \vspace{10pt}
       
       \problemAnswer{
-        
+        Assuming the solution to~\eqref{eq:linear_regression}
+        $\hat{\bm{\beta}}$, a reasonable prediction rule is simply
+        \begin{align}
+          \hat{y}(\mathbf{x}) = \mathbf{x}^T\hat{\bm{\beta}}
+        \end{align}
       }
     \end{homeworkSection}
     
@@ -356,7 +449,22 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        \begin{subequations}
+          \begin{align}
+            \mathbb{E}[\hat{y}(\mathbf{x}_{n+1}) - y_{n+1}] &=
+            \mathbb{E}[\hat{y}(\mathbf{x}_{n+1})] - \mathbb{E}[y_{n+1}] \\
+            &= \mathbb{E}[\mathbf{x}_{n+1}^T\hat{\beta}] -
+            \mathbf{x}_{n+1}^T\bm{\beta} \\
+            &=
+            \mathbf{x}_{n+1}^T(\mathbf{X}^T\mathbf{X})^{-1}
+            \mathbf{X}^T\mathbb{E}[\mathbf{y}] -
+            \mathbf{x}_{n+1}^T\bm{\beta} \\
+            &= \mathbf{x}_{n+1}^T(\mathbf{X}^T\mathbf{X})^{-1}
+            \mathbf{X}^T(\mathbf{X}\bm{\beta}) -
+            \mathbf{x}_{n+1}^T\bm{\beta} \\
+            &= 0
+          \end{align}
+        \end{subequations}
       }
     \end{homeworkSection}
   \end{homeworkProblem}
@@ -379,9 +487,21 @@
       for generating these objects.
       \vspace{10pt}
       
-      \problemAnswer{
-        
-      }
+      \problemAnswer{}
+\begin{lstlisting}[language=Python]
+import numpy as np
+from scipy.linalg import toeplitz
+
+p = 12
+n = 200
+rho = 0.5
+
+X = np.random.multivariate_normal(np.zeros(p, dtype="float64"),\
+                                  toeplitz(rho ** np.arange(p)),\
+                                  n)
+beta = np.random.normal(0, 1, p)
+y = np.dot(X, beta) + np.random.normal(0, 1, n)
+\end{lstlisting}
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -389,13 +509,24 @@
       \begin{align}
         \hat{\bm{\beta}}:= \arg\min_{\bm{\beta}\in\mathbb{R}^p} \|\mathbf{y} -
         \mathbf{X}\bm{\beta}\|_2^2 + \lambda\|\bm{\beta}\|_2^2,
-      \label{eq:linear_regression}
+      \label{eq:ridge_regression}
       \end{align}
       as a function of $\mathbf{X}, \mathbf{y}, λ$.
       \vspace{10pt}
       
       \problemAnswer{
-        
+        The stationary condition for~\eqref{eq:ridge_regression} is
+        \begin{align}
+          \pdv{(\|\mathbf{y} - \mathbf{X}\bm{\beta}\|_2^2 +
+          \lambda\|\bm{\beta}\|_2^2)}{\bm{\beta}} &= 2(\mathbf{X}^T\mathbf{X} +
+          \lambda\mathbf{I})\bm{\beta} - 2\mathbf{X}^T\mathbf{y} = \mathbf{0}
+        \end{align}
+        When $\lambda>0$, $(\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})$ is
+        always positive-definite. Therefore the solution to ridge regression is
+        \begin{align}
+          \hat{\bm{\beta}} = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}
+          \mathbf{X}^T\mathbf{y}
+        \end{align}
       }
     \end{homeworkSection}
       
@@ -403,9 +534,12 @@
       Provide code for solving ridge regression. Use any linear solver you like.
       \vspace{10pt}
       
-      \problemAnswer{
-        
-      }
+      \problemAnswer{}
+\begin{lstlisting}[language=Python]
+alpha = 0.5
+C = np.dot(X.T, X) + alpha * np.eye(p)
+beta_est = np.linalg.solve(C, np.dot(X.T, y))
+\end{lstlisting}
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -419,10 +553,137 @@
       \vspace{10pt}
       
       \problemAnswer{
+        Since $\mathbf{y} = \mathbf{X}\bm{\beta} + \mathbf{v}$ where
+        $\mathbf{v}\sim\mathcal{N}(0, 1)$. Given a set of predictors
+        $\mathbf{X}$, we have
+        \begin{align}
+          \mbox{bias}_{{\mathbf{X}}} &=
+          \mathbb{E}_{\hat{\bm{\beta}}}\left[\|\mathbb{E}_{\mathbf{v}}[\hat{\bm{\beta}]}
+          - \bm{\beta}\|_2^2\right]\notag \\
+          &=
+          \mathbb{E}_{\bm{\beta}}\left[
+          \|\mathbb{E}_{\mathbf{v}}[(\mathbf{X}^T\mathbf{X} +
+          \lambda\mathbf{I})^{-1}\mathbf{X}^T(\mathbf{X}\bm{\beta} +
+          \mathbf{v})] - \bm{\beta}\|_2^2\right]\notag \\
+          &=
+          \mathbb{E}_{\bm{\beta}}
+          \left[\bm{\beta}^T\mathbf{A}^T\mathbf{A}\bm{\beta}\right]\notag \\
+          &= \|\mathbf{A}\|_F^2
+        \end{align}
+        where $\mathbf{A} = -\lambda(\mathbf{X}^T\mathbf{X} +
+        \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{X}$.
+        Similarly, we have
+        \begin{align}
+          \mbox{var}_{\mathbf{X}} & =
+          \mathbb{E}_{\bm{\beta}}\mathbb{E}_{\mathbf{v}}\left[\|\hat{\bm{\beta}}
+          - \mathbb{E}_{\mathbf{v}}[\hat{\bm{\beta}}]\|_2^2\right]\notag \\
+          &= \mathbb{E}_{\mathbf{v}}\left[\|(\mathbf{X}^T\mathbf{X} +
+          \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{v}\|_2^2\right]\notag \\
+          &= \mathbb{E}_{\mathbf{v}}
+          \left[\mathbf{v}^T\mathbf{B}^T\mathbf{B}\mathbf{v}\right]\notag
+          \\
+          &= \|\mathbf{B}\|_F^2
+        \end{align}
+        where $\mathbf{B} = (\mathbf{X}^T\mathbf{X} +
+        \lambda\mathbf{I})^{-1}\mathbf{X}^T$. The mean square error given
+        $\mathbf{X}$ can be simply evaluated as
+        \begin{align}
+          \mbox{mse}_{\mathbf{X}} & =
+          \mathbb{E}_{\bm{\beta}}
+          \left[\mathbb{E}_{\mathbf{v}}\|\hat{\bm{\beta}} -
+          \bm{\beta}\|_2^2\right] \notag\\
+          & =
+          \mathbb{E}_{\bm{\beta}}
+          \left[\mathbb{E}_{\mathbf{v}}\|(\hat{\bm{\beta}} -
+          \mathbb{E}_{\mathbf{v}}[\hat{\bm{\beta}}]) +
+          (\mathbb{E}_{\mathbf{v}}[\hat{\bm{\beta}}] - \bm{\beta})
+          \|_2^2\right] \notag\\
+          &= \mbox{bias}_{{\mathbf{X}}} + \mbox{var}_{{\mathbf{X}}} +
+          2\mathbb{E}_{\bm{\beta}}
+          \left[\mathbb{E}_{\mathbf{v}}\left[(\hat{\bm{\beta}} -
+          \mathbb{E}_{\mathbf{v}}[\hat{\bm{\beta}}])^T (\mathbb{E}_{\mathbf{v}}[\hat{\bm{\beta}}] - \bm{\beta})\right]
+          \right] \notag \\
+          &= \mbox{bias}_{{\mathbf{X}}} + \mbox{var}_{{\mathbf{X}}}
+        \end{align}
+        As a result, the total bias, variance and mean-square error averaged
+        over $\mathbf{X}$ can be evaluated with a Monte-Carlo simulation by
+        generating $n_{\mathbf{X}}$ instances of $\mathbf{X}$ and take the
+        empirical means:
+        \begin{align}
+          \mbox{bias}_{emp} = \frac{1}{n_{\mathbf{X}}} \sum_{i =
+          1}^{n_{\mathbf{X}}} \mbox{bias}_{\mathbf{X}_i},\;
+          \mbox{var}_{emp} = \frac{1}{n_{\mathbf{X}}} \sum_{i =
+          1}^{n_{\mathbf{X}}} \mbox{var}_{\mathbf{X}_i}
+        \end{align}
+        and $\mbox{mse}_{emp} = \mbox{bias}_{emp} + \mbox{var}_{emp}$. The
+        results are shown in Fig.~\ref{fig:tradeoff}. As $\lambda$ grows, the
+        bias increases while the variance decreases. The minimum MSE is achieved
+        at $\lambda = 1$, which corresponds to the maximization of the posterior
+        distribution of $\bm{\beta}$~\cite[Sec.3.3.1]{bishop2006pattern}. The
+        code is listed as follows:
         
+        \begin{figure}[h]
+          \centering
+          \includegraphics[width=3.5in]{figs/tradeoff.png}
+          \caption{Bias, variance ane MSE for ridge regression.}
+          \label{fig:tradeoff}
+        \end{figure}
       }
     \end{homeworkSection}
   \end{homeworkProblem}
+\begin{lstlisting}[language=Python]
+def get_error_cond_X(X, alpha):
+    n, p = X.shape
+    
+    XX = np.dot(X.T, X)
+    C = XX + alpha * np.eye(p)
+    bias = np.linalg.norm(np.linalg.solve(C, XX) - np.eye(p)) ** 2
+    var = np.linalg.norm(np.linalg.solve(C, X.T)) ** 2
+    mse = bias + var
+
+    return np.array((bias, var, mse))
+
+def get_error(alpha, p = 12, n = 200, rho = 0.5, n_X = 1000, n_montecarlo = None):
+    
+    n_alpha = len(alpha)
+    error = np.empty([n_alpha, n_X, 3], dtype="float64")
+    X = np.random.multivariate_normal(np.zeros(p, dtype="float64"),\
+                                  toeplitz(rho ** np.arange(p)),\
+                                  (n_X, n))
+    if n_montecarlo is None:
+        for i_alpha in range(n_alpha):
+            for i_X in range(n_X):
+                error[i_alpha, i_X] = get_error_cond_X(X[i_X], alpha[i_alpha])
+    else:
+        for i_alpha in range(n_alpha):
+            for i_X in range(n_X):
+                n_beta, nrun = n_montecarlo
+                error[i_alpha, i_X] = get_error_cond_X_montecarlo(X[i_X],\
+                alpha[i_alpha], n_beta, nrun)
+        
+    return error.mean(axis=1)
+    
+alpha = np.linspace(0.0, 2.0, 11)
+errors = get_error(alpha)
+
+import matplotlib.pyplot as plt
+%matplotlib qt
+
+axis_font = {'size':'20'}
+
+fig, axs = plt.subplots(3, 1, sharex=True)
+
+axs[0].plot(alpha, errors[:, 0], "+-", lw=2, markersize=10, markeredgewidth=2)
+axs[0].set_ylabel("Bias", **axis_font)
+axs[0].grid(True)
+axs[1].plot(alpha, errors[:, 1], "+-", lw=2, markersize=10, markeredgewidth=2)
+axs[1].set_ylabel("Var", **axis_font)
+axs[1].grid(True)
+axs[2].plot(alpha, errors[:, 2], "+-", lw=2, markersize=10, markeredgewidth=2)
+axs[2].set_ylabel("MSE", **axis_font)
+axs[2].set_xlabel("$\lambda$", **axis_font)
+axs[2].grid(True)
+\end{lstlisting} 
   
   %----------------------------------------------------------------------------------------
   % PROBLEM 5
@@ -498,7 +759,8 @@
   %\newpage
   %\begin{appendices} 
   %\end{appendices}
-
+  \bibliographystyle{unsrt}
+  \bibliography{refs}
   
   %----------------------------------------------------------------------------------------
 
