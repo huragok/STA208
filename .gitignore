@@ -8,6 +8,13 @@ tmp
 .texlipse
 .metadata
 raw
+*.png
 
 # Homework handouts and compiled pdf files
 *.pdf
+
+# Datasets
+airfoil_self_noise.dat
+
+# Notebook checkpoints/
+*.ipynb_checkpoints/

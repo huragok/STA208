@@ -632,6 +632,35 @@ beta_est = np.linalg.solve(C, np.dot(X.T, y))
     \end{homeworkSection}
   \end{homeworkProblem}
 \begin{lstlisting}[language=Python]
+def get_error_cond_X_beta_montecarlo(X, beta, alpha, nrun):
+    
+    n, p = X.shape
+    y_mean = np.dot(X, beta)
+    noise = np.random.normal(0, 1, (nrun, n))
+
+    C = np.dot(X.T, X) + alpha * np.eye(p)
+    v = np.dot(X.T, y_mean)
+    beta_est = np.empty((nrun, p), dtype="float64")
+    for irun in range(nrun):
+        beta_est[irun] = np.linalg.solve(C, v + np.dot(X.T, noise[irun]))
+                                                             
+    bias = np.linalg.norm(beta_est.mean(axis=0) - beta) ** 2
+    var = (np.linalg.norm(beta_est - beta_est.mean(axis=0)) ** 2) / nrun
+    mse = bias + var
+
+    return np.array((bias, var, mse))
+
+def get_error_cond_X_montecarlo(X, alpha, n_beta=100, nrun=1000):
+    
+    n, p = X.shape
+    beta = np.random.normal(0, 1, (n_beta, p))
+    error = np.empty([n_beta, 3], dtype="float64")
+    
+    for i_beta in range(n_beta):
+        error[i_beta] = get_error_cond_X_beta_montecarlo(X, beta[i_beta], alpha, nrun)
+        
+    return error.mean(axis=0)
+    
 def get_error_cond_X(X, alpha):
     n, p = X.shape
     
@@ -665,6 +694,7 @@ def get_error(alpha, p = 12, n = 200, rho = 0.5, n_X = 1000, n_montecarlo = None
     
 alpha = np.linspace(0.0, 2.0, 11)
 errors = get_error(alpha)
+# errors = get_error(alpha, n_X = 100, n_montecarlo=(20, 100))
 
 import matplotlib.pyplot as plt
 %matplotlib qt
@@ -692,13 +722,42 @@ axs[2].grid(True)
     Download the airfoil dataset, which is linked in the homework section of the
     course site. We will focus on predicting the scaled sound pressure, which is
     the 6th row.
+    
     \begin{homeworkSection}
       Set aside a test set at random.
       \vspace{10pt}
       
       \problemAnswer{
-      
+        We randomly set aside \~20\% data as the test set. Since some of the
+        algorithm to implement depends on the scale of each predictor (e.g. KNN
+        and kernel smoother), the features are also normalized. The code
+        that imports and preprocesses the data are listed as follows
       }
+\begin{lstlisting}[language=Python]
+import pandas as pd
+import numpy as np
+import random
+import math
+
+from sklearn import preprocessing
+from sklearn import linear_model
+from sklearn import neighbors
+
+df = pd.read_csv('airfoil_self_noise.dat', header=None, delimiter=r"\s+")
+
+frac = 0.2 # The portion of data to set aside
+
+n, p = df.shape
+
+row_test= random.sample(range(n), math.floor(frac * n))
+row_train = list(set(range(n)) - set(row_test))
+
+X = preprocessing.normalize(df.values[:, :5], axis=0)
+y = df.values[:, 5]
+X_train, X_test = X[row_train], X[row_test]
+y_train, y_test = y[row_train], y[row_test]
+\end{lstlisting}
+      
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -708,9 +767,13 @@ axs[2].grid(True)
       decomposition you like.
       \vspace{10pt}
       
-      \problemAnswer{
-        
-      }
+      \problemAnswer{}
+\begin{lstlisting}[language=Python]
+regr_lin = linear_model.LinearRegression()
+regr_lin.fit(X_train, y_train)
+
+error_lin = ((regr_lin.predict(X_test) - y_test) ** 2).mean()
+\end{lstlisting}      
     \end{homeworkSection}
       
     \begin{homeworkSection}
@@ -718,9 +781,19 @@ axs[2].grid(True)
       and outputs the k-nearest neighbor prediction with Euclidean distance.
       \vspace{10pt}
       
-      \problemAnswer{
-        
-      }
+      \problemAnswer{}
+\begin{lstlisting}[language=Python]
+k_range = np.arange(1, 40, 1, dtype="int32")
+n_k = len(k_range)
+error_knn = np.empty(n_k, dtype="float64")
+
+regr_knn = neighbors.KNeighborsRegressor()
+for i_k, k in enumerate(k_range): 
+    regr_knn.set_params(n_neighbors=k)
+    regr_knn.fit(X_train, y_train)
+
+    error_knn[i_k] = ((regr_knn.predict(X_test) - y_test) ** 2).mean()
+\end{lstlisting}      
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -730,8 +803,50 @@ axs[2].grid(True)
       \vspace{10pt}
       
       \problemAnswer{
+        Note that when the bandwidth parameter is so small that there is no
+        samples within the neighborhood, the prediction is made using 1-nearest
+        approach.
+       }
+      
+\begin{lstlisting}[language=Python]
+class KernelSmootherBoxcar:
+    def __init__(self, bandwidth = 1.0):
+        self.bandwidth = bandwidth
         
-      }
+    def set_params(self, **kargs):
+        for key in kargs.keys():
+            self.key = kargs[key]
+            
+    def fit(self, X, y):
+        self.X = X
+        self.y = y
+        
+    def predict(self, X_new):
+
+        m = len(X_new)
+        y_new = np.empty(m, dtype="float64")
+        for i, x_new in enumerate(X_new):  
+            distances = np.linalg.norm(x_new - self.X, axis=1)
+            neighbors = (distances < bandwidth)
+      
+            if (sum(neighbors) == 0): # There is no neighbor within the bandwidth, use the nearest neighbor
+                y_new[i] = self.y[np.argmin(distances)]
+            else: # Average among the neighbors
+                y_new[i] = self.y[neighbors].mean(axis=0)
+        
+        return y_new
+
+bandwidth_range = np.arange(0.0, 0.02, 0.0004)
+n_bandwidth = len(bandwidth_range)
+error_ksb = np.empty(n_bandwidth, dtype="float64")
+
+regr_ksb = KernelSmootherBoxcar()
+for i_bandwidth, bandwidth in enumerate(bandwidth_range): 
+    regr_ksb.set_params(bandwidth=bandwidth)
+    regr_ksb.fit(X_train, y_train)
+    
+    error_ksb[i_bandwidth] = ((regr_ksb.predict(X_test) - y_test) ** 2).mean()
+\end{lstlisting}
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -741,7 +856,18 @@ axs[2].grid(True)
       \vspace{10pt}
       
       \problemAnswer{
+        The results are shown in Fig~\ref{fig:comparison}, where Lin. Reg.
+        represents ordinary least squares (linear regression), KNN represents
+        $k$-nearest neighbor, and KSB represents kernel smoother using boxcar
+        kernel.
         
+        \begin{figure}[h]
+          \centering
+          \includegraphics[width=3.5in]{figs/comparison.png}
+          \caption{The comparison of MSE among least square regression,
+          $k$-nearest neighbor and kernel smoother with boxcar kernel.}
+          \label{fig:comparison}
+        \end{figure}
       }
     \end{homeworkSection}
     
@@ -751,8 +877,11 @@ axs[2].grid(True)
       \vspace{10pt}
       
       \problemAnswer{
-        
-      }
+        The best test error may not be a good estimate of the true
+        risk since the data are not made full use of. A better approach to
+        estimate the true risk is the $K$-fold cross-validation estimate or
+        bootstrap method as described in~\cite[Sec.
+        7.10, 7.11]{hastie2005elements}.}
     \end{homeworkSection}
   \end{homeworkProblem}
   
