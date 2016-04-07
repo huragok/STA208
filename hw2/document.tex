@@ -1,0 +1,367 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Structured General Purpose Assignment
+% LaTeX Template
+%
+% This template has been downloaded from:
+% http://www.latextemplates.com
+%
+% Original author:
+% Ted Pavlic (http://www.tedpavlic.com)
+%
+% Note:
+% The \lipsum[#] commands throughout this template generate dummy text
+% to fill the template out. These commands should all be removed when 
+% writing assignment content.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+% PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\usepackage{fancyhdr} % Required for custom headers
+\usepackage{lastpage} % Required to determine the last page for the footer
+\usepackage{extramarks} % Required for headers and footers
+\usepackage{graphicx} % Required to insert images
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage{amsmath, amsfonts, bm, physics}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage[toc,page]{appendix}
+
+\lstset{
+    %numbers=left,
+    stepnumber=1,    
+    firstnumber=1,
+    numberfirstline=true,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{green}\ttfamily,
+    breaklines=true,
+}
+
+% Margins
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in 
+
+\linespread{1.1} % Line spacing
+
+% Set up the header and footer
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName} % Top left header
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle} % Top center header
+\rhead{\firstxmark} % Top right header
+\lfoot{\lastxmark} % Bottom left footer
+\cfoot{} % Bottom center footer
+\rfoot{Page\ \thepage\ of\ \pageref{LastPage}} % Bottom right footer
+\renewcommand\headrulewidth{0.4pt} % Size of the header rule
+\renewcommand\footrulewidth{0.4pt} % Size of the footer rule
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+%----------------------------------------------------------------------------------------
+% DOCUMENT STRUCTURE COMMANDS
+% Skip this unless you know what you're doing
+%----------------------------------------------------------------------------------------
+
+% Header and footer for when a page split occurs within a problem environment
+\newcommand{\enterProblemHeader}[1]{
+  \nobreak\extramarks{#1}{#1 continued on next page\ldots}\nobreak
+  \nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak
+}
+
+% Header and footer for when a page split occurs between problem environments
+\newcommand{\exitProblemHeader}[1]{
+  \nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak
+  \nobreak\extramarks{#1}{}\nobreak
+}
+
+\setcounter{secnumdepth}{0} % Removes default section numbers
+\newcounter{homeworkProblemCounter} % Creates a counter to keep track of the number of problems
+
+\newcommand{\homeworkProblemName}{}
+\newenvironment{homeworkProblem}[1][]{ % Makes a new environment called homeworkProblem which takes 1 argument (custom name) but the default is "Problem #"
+  \stepcounter{homeworkProblemCounter} % Increase counter for number of
+% problems
+  \setcounter{homeworkSectionctr}{0}
+  %\renewcommand{\homeworkProblemName}{#1} % Assign \homeworkProblemName the
+% name of the problem
+  \section{\arabic{homeworkProblemCounter}. #1} %
+  % Make a section in the document with the
+% custom problem count
+  \enterProblemHeader{\homeworkProblemName} % Header and footer within the
+% environment
+}{
+  \exitProblemHeader{\homeworkProblemName} % Header and footer after the
+% environment
+}
+
+\newcommand{\problemAnswer}[1]{ % Defines the problem answer command with the content as the only argument
+  \noindent\textbf{\emph{Answer: }}#1 % Just put a keyword Answer in
+  % bold/italic at the beginning
+}
+
+%\newcommand{\homeworkSectionName}{}
+%\newenvironment{homeworkSection}[1]{ % New environment for sections within
+% homework problems, takes 1 argument - the name of the section
+%  \renewcommand{\homeworkSectionName}{#1} % Assign \homeworkSectionName to the
+% name of the section from the environment argument
+%  \subsection{\homeworkSectionName} % Make a subsection with the custom name
+% of the subsection
+%  \enterProblemHeader{\homeworkProblemName\ [\homeworkSectionName]} % Header
+% and footer within the environment
+%}{
+%  \enterProblemHeader{\homeworkProblemName} % Header and footer after the
+% environment
+%}
+
+\newcounter{homeworkSectionctr}
+\newenvironment{homeworkSection}{
+  \medskip\noindent%         create a vertical offset to previous material
+  \refstepcounter{homeworkSectionctr}% increment the environment's counter
+  \textbf{(\alph{homeworkSectionctr})\ }% or \textbf,.
+}
+
+\newtheorem{theorem}{Theorem}[homeworkProblemCounter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\newenvironment{proof}[1][Proof]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+\newenvironment{definition}[1][Definition]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+
+\newenvironment{example}[1][Example]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+    
+\newenvironment{remark}[1][Remark]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+
+\newcommand{\qed}{
+  \nobreak \ifvmode \relax \else
+  \ifdim\lastskip<1.5em \hskip-\lastskip
+  \hskip1.5em plus0em minus0.5em \fi \nobreak
+  \vrule height0.75em width0.5em depth0.25em\fi
+}
+
+\lstset{
+  frame=single,
+  breaklines=true,
+  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
+}
+   
+%----------------------------------------------------------------------------------------
+% NAME AND CLASS SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\hmwkTitle}{Assignment\ \#2} % Assignment title
+\newcommand{\hmwkDueDate}{Monday, April\ 11,\ 2016} % Due date
+\newcommand{\hmwkClass}{STA\ 208} % Course/class
+\newcommand{\hmwkClassTime}{MW 12:00 - 2:00 P.M.} % Class/lecture time
+\newcommand{\hmwkClassInstructor}{Prof. James Sharpnack} % Teacher/lecturer
+\newcommand{\hmwkAuthorName}{Wenhao Wu} % Your name
+
+%----------------------------------------------------------------------------------------
+% TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{
+  \vspace{2in}
+  \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+  \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}\\
+  \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+  \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{} % Insert date here if you want it to appear below your name
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+  \maketitle
+  
+  %----------------------------------------------------------------------------------------
+  % TABLE OF CONTENTS
+  %----------------------------------------------------------------------------------------
+  
+  %\setcounter{tocdepth}{1} % Uncomment this line if you don't want subsections listed in the ToC
+  
+  \newpage
+  \tableofcontents
+  \newpage
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 1
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}
+    The following losses are used as surrogate losses for large margin
+    classification. Demonstrate if they are convex or not, and follow the
+    instructions.
+    
+    \begin{homeworkSection}
+      exponential loss: $\phi(x)=e^{-x}$
+      \vspace{10pt}
+      
+      \problemAnswer{
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      truncated quadratic loss: $\phi(x)=(\max\{1-x, 0\})^2$
+      \vspace{10pt}
+      
+      \problemAnswer{
+      }
+      
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      hinge loss: $\phi(x) = \max\{1 - x, 0\}$
+      \vspace{10pt}
+      
+      \problemAnswer{
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      sigmoid loss: $\phi(x) = 1 - \tanh(\kappa x)$, for fixed $\kappa > 0$
+      \vspace{10pt}
+      
+      \problemAnswer{
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Plot these as a function of $x$.
+      \vspace{10pt}
+      
+      \problemAnswer{
+      }
+    \end{homeworkSection}
+    
+    (This problem is due to notes of Larry Wasserman.)
+  \end{homeworkProblem}
+  %\clearpage
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 2
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}
+    Consider the least-squares problem with $n$ $p$-dimensional covariates,
+    $\{\mathbf{x}_i, y_i\}_{i=1}^n \subset \mathbb{R}^p \times \mathbb{R}$. We
+    would like to fit the following linear model, $\hat{y}(\mathbf{x}) =
+    \mathbf{x}^T\bm{\beta}$. Also, suppose that there are coefficients $C_+
+    \subset \{1, \ldots , p\}$ such that for all $j \in C_+$ we require that
+    $\beta_j \geq 0$, $j\in C_+$, and another set $C_- \subset \{1, \ldots,
+    p\}$, such that $\beta_j \leq 0$, $j \in C_-$ (assume that $C_+$ and $C_-$
+    are non-overlapping). Suppose that $\mathbf{X}^T\mathbf{X}$ is invertible.
+      
+    Such examples occur in insurance applications: the cost of a given insurance
+    policy is based on a model for the amount of money a customer will cost the
+    company, and each covariate is a variable specific to the customer (such as
+    gender, age, credit history, etc.). It looks bad for the company if the
+    insurance policy is more expensive for a customer that has an older account
+    with the company than a newer account, when everything else is held fixed.
+    Let $x_{i,j} = 1\{\mbox{customer $i$ is has had a policy for more than 2
+    years}\}$, then $\beta_j \geq 0$ is necessary for this property to hold.
+
+    \begin{homeworkSection}
+      Write the constrained optimization for the empirical risk minimization
+      with the constraints.
+      \vspace{10pt}
+      
+      \problemAnswer{
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Derive the dual for the optimization as a function of dual parameters.
+      \vspace{10pt}
+      
+      \problemAnswer{
+      }
+    \end{homeworkSection}
+      
+    \begin{homeworkSection}
+      Write the KKT conditions and remark on the implication of the
+      complementary slackness condition.
+      \vspace{10pt}
+      
+      \problemAnswer{
+      }
+    \end{homeworkSection}
+    
+  \end{homeworkProblem}
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 3
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}
+    Look at the dataset which can be found here: \url{https://archive.ics.uci.edu/ml/datasets/Blood+Transfusion+Service+Center}
+      
+    \begin{homeworkSection}
+      You will predict the final column in the dataset, which is an indicator if
+      the person has made a blood donation. Form three different kernel
+      functions and $n\times n$ kernel matrices of $K_{i,j} = k(\mathbf{x}_i,
+      \mathbf{x}_j)$ that you think might be appropriate. You may use 2
+      different built in kernels, but must define one yourself.
+      \vspace{10pt}
+      
+      \problemAnswer{
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Apply kernel SVMs and $k$-nearest neighbors (where the distance is $d(i,
+      j) = k(\mathbf{x}_i, \mathbf{x}_i) + k(\mathbf{x}_j, \mathbf{x}_j) -
+      2k(\mathbf{x}_i, \mathbf{x}_j))$ with each of the 3 kernels.
+      \vspace{10pt}
+      
+      \problemAnswer{
+      }
+    \end{homeworkSection}
+      
+    \begin{homeworkSection}
+      Tune any parameters basedon what you have learned about validation, and
+      compare these methods with test errors (there are 6 different methods to
+      compare, kNN and SVM with each kernel).
+      \vspace{10pt}
+      
+      \problemAnswer{
+      }
+    \end{homeworkSection}
+    
+  \end{homeworkProblem}
+  
+  %\newpage
+  %\begin{appendices} 
+  %\end{appendices}
+  %\bibliographystyle{unsrt}
+  %\bibliography{refs}
+  
+  %----------------------------------------------------------------------------------------
+
+\end{document}
