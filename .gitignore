@@ -15,6 +15,7 @@ raw
 
 # Datasets
 airfoil_self_noise.dat
+transfusion.data
 
 # Notebook checkpoints/
 *.ipynb_checkpoints/
