@@ -1,0 +1,449 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Structured General Purpose Assignment
+% LaTeX Template
+%
+% This template has been downloaded from:
+% http://www.latextemplates.com
+%
+% Original author:
+% Ted Pavlic (http://www.tedpavlic.com)
+%
+% Note:
+% The \lipsum[#] commands throughout this template generate dummy text
+% to fill the template out. These commands should all be removed when 
+% writing assignment content.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+% PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\usepackage{fancyhdr} % Required for custom headers
+\usepackage{lastpage} % Required to determine the last page for the footer
+\usepackage{extramarks} % Required for headers and footers
+\usepackage{graphicx} % Required to insert images
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage{amsmath, amsfonts, bm, physics}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage[toc,page]{appendix}
+
+\lstset{
+    %numbers=left,
+    stepnumber=1,    
+    firstnumber=1,
+    numberfirstline=true,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{green}\ttfamily,
+    breaklines=true,
+}
+
+% Margins
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in 
+
+\linespread{1.1} % Line spacing
+
+% Set up the header and footer
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName} % Top left header
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle} % Top center header
+\rhead{\firstxmark} % Top right header
+\lfoot{\lastxmark} % Bottom left footer
+\cfoot{} % Bottom center footer
+\rfoot{Page\ \thepage\ of\ \pageref{LastPage}} % Bottom right footer
+\renewcommand\headrulewidth{0.4pt} % Size of the header rule
+\renewcommand\footrulewidth{0.4pt} % Size of the footer rule
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+%----------------------------------------------------------------------------------------
+% DOCUMENT STRUCTURE COMMANDS
+% Skip this unless you know what you're doing
+%----------------------------------------------------------------------------------------
+
+% Header and footer for when a page split occurs within a problem environment
+\newcommand{\enterProblemHeader}[1]{
+  \nobreak\extramarks{#1}{#1 continued on next page\ldots}\nobreak
+  \nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak
+}
+
+% Header and footer for when a page split occurs between problem environments
+\newcommand{\exitProblemHeader}[1]{
+  \nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak
+  \nobreak\extramarks{#1}{}\nobreak
+}
+
+\setcounter{secnumdepth}{0} % Removes default section numbers
+\newcounter{homeworkProblemCounter} % Creates a counter to keep track of the number of problems
+
+\newcommand{\homeworkProblemName}{}
+\newenvironment{homeworkProblem}[1][]{ % Makes a new environment called homeworkProblem which takes 1 argument (custom name) but the default is "Problem #"
+  \stepcounter{homeworkProblemCounter} % Increase counter for number of
+% problems
+  \setcounter{homeworkSectionctr}{0}
+  %\renewcommand{\homeworkProblemName}{#1} % Assign \homeworkProblemName the
+% name of the problem
+  \section{\arabic{homeworkProblemCounter}. #1} %
+  % Make a section in the document with the
+% custom problem count
+  \enterProblemHeader{\homeworkProblemName} % Header and footer within the
+% environment
+}{
+  \exitProblemHeader{\homeworkProblemName} % Header and footer after the
+% environment
+}
+
+\newcommand{\problemAnswer}[1]{ % Defines the problem answer command with the content as the only argument
+  \noindent\textbf{\emph{Answer: }}#1 % Just put a keyword Answer in
+  % bold/italic at the beginning
+}
+
+%\newcommand{\homeworkSectionName}{}
+%\newenvironment{homeworkSection}[1]{ % New environment for sections within
+% homework problems, takes 1 argument - the name of the section
+%  \renewcommand{\homeworkSectionName}{#1} % Assign \homeworkSectionName to the
+% name of the section from the environment argument
+%  \subsection{\homeworkSectionName} % Make a subsection with the custom name
+% of the subsection
+%  \enterProblemHeader{\homeworkProblemName\ [\homeworkSectionName]} % Header
+% and footer within the environment
+%}{
+%  \enterProblemHeader{\homeworkProblemName} % Header and footer after the
+% environment
+%}
+
+\newcounter{homeworkSectionctr}
+\newenvironment{homeworkSection}{
+  \medskip\noindent%         create a vertical offset to previous material
+  \refstepcounter{homeworkSectionctr}% increment the environment's counter
+  \textbf{(\alph{homeworkSectionctr})\ }% or \textbf,.
+}
+
+\newtheorem{theorem}{Theorem}[homeworkProblemCounter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\newenvironment{proof}[1][Proof]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+\newenvironment{definition}[1][Definition]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+
+\newenvironment{example}[1][Example]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+    
+\newenvironment{remark}[1][Remark]{
+  \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries #1}]}{
+  \end{trivlist}
+}
+
+\newcommand{\qed}{
+  \nobreak \ifvmode \relax \else
+  \ifdim\lastskip<1.5em \hskip-\lastskip
+  \hskip1.5em plus0em minus0.5em \fi \nobreak
+  \vrule height0.75em width0.5em depth0.25em\fi
+}
+
+\lstset{
+  frame=single,
+  breaklines=true,
+  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
+}
+   
+%----------------------------------------------------------------------------------------
+% NAME AND CLASS SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\hmwkTitle}{Assignment\ \#3} % Assignment title
+\newcommand{\hmwkDueDate}{Monday, April\ 25,\ 2016} % Due date
+\newcommand{\hmwkClass}{STA\ 208} % Course/class
+\newcommand{\hmwkClassTime}{MW 12:00 - 2:00 P.M.} % Class/lecture time
+\newcommand{\hmwkClassInstructor}{Prof. James Sharpnack} % Teacher/lecturer
+\newcommand{\hmwkAuthorName}{Wenhao Wu} % Your name
+
+%----------------------------------------------------------------------------------------
+% TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{
+  \vspace{2in}
+  \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+  \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}\\
+  \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+  \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{} % Insert date here if you want it to appear below your name
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+  \maketitle
+  
+  %----------------------------------------------------------------------------------------
+  % TABLE OF CONTENTS
+  %----------------------------------------------------------------------------------------
+  
+  %\setcounter{tocdepth}{1} % Uncomment this line if you don't want subsections listed in the ToC
+  
+  \newpage
+  \tableofcontents
+  \newpage
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 1
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}
+    This question is about your final project.
+    
+    \begin{homeworkSection}
+      List the members of your group.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      What is the title of your project?
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+      
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Give a brief description of what you intend to do.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+  \end{homeworkProblem}
+  %\clearpage
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 2
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}
+    Consider the following linear classification loss function:
+    \begin{align}
+      l(\bm{\beta};y_i,\mathbf{x}_i) = (1 - y_i\mathbf{x}_i^T\bm{\beta})_+^2
+      \notag
+    \end{align}
+    where $z_+ = \max\{0, z\}$. Consider the modified support vector machine
+    program,
+    \begin{align}
+      \min_{\bm{\beta}\in\mathbb{R}^p} \frac{1}{n}\sum_{i=1}^n
+      l(\bm{\beta};y_i,\mathbf{x}_i) + \lambda \|\bm{\beta}\|_2^2.
+      \label{eq:mod_svm}
+    \end{align}
+    \begin{homeworkSection}
+       Compute the gradient of the objective in~\eqref{eq:mod_svm} and verify
+       that it is continuous.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Write the pseudocode for gradient descent with exact line search for this
+      gradient (you do not need to write out the bisection algorithm for exact
+      line search, only state what exact line search is.).
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+      
+    \begin{homeworkSection}
+      Suppose that we make a transformation $\mathbf{z}_i = \Phi(\mathbf{x}_i)$
+      and we use this as the design matrix. Rewrite the minimization
+      for~\eqref{eq:mod_svm} with the generalized kernel trick (Hint: make the
+      substitution $\bm{\beta} = \mathbf{Z}^T \bm{\gamma}$ and write it as a
+      function of $\bm{\gamma}$ and define $\mathbf{K} = \mathbf{ZZ}^T$.).
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+  \end{homeworkProblem}
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 3
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}
+    Consider the following way in which we encode logical statements. For
+    $\mathbf{x} \in \{0, 1\}^p$, we will encode the ``and'' and ``or''
+    statements: ($x_i > 0$ and $x_j > 0$) is the same as ($x_ix_j > 0$); ($x_i >
+    0$ or $x_j > 0$) is the same as ($x_i + x_j > 0$).
+      
+    \begin{homeworkSection}
+      Suppose that $y_i = 1$ if and only if ($x_1 = 1$ and $x_2 = 1$) or $x_3 =
+      1$. Write a function $f(\mathbf{x})$ such that $f(\mathbf{x}) = 1$ if and
+      only if $y_i$.
+      \vspace{10pt}
+      
+      \problemAnswer{
+      
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Define an embedding of $\mathbf{x}$ such that the dataset has a separating
+      hyperplane, and write an equation for the separating hyperplane as a
+      function of $\mathbf{z}_i = \Phi(\mathbf{x}_i)$.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+      
+    \begin{homeworkSection}
+      From this embedding construct the kernel function $k(\mathbf{x}_i,
+      \mathbf{x}_j)$.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+
+    \begin{homeworkSection}
+      Suppose that $y_i = 1$ if and only if ($x_1 = 1$ or $x_2 = 1$) and ($x_3 =
+      1$ and $x_4 = 1$). Write a function $f(\mathbf{x})$ such that
+      $f(\mathbf{x}) > 0$ if and only if $y_i$.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Define an embedding of $\mathbf{x}$ such that this new dataset has a
+      separating hyperplane, and write an equation for the separating hyperplane
+      as a function of $\mathbf{z}_i = \Phi(\mathbf{x}_i)$.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+       From this embedding construct the kernel function $k(\mathbf{x}_i,
+      \mathbf{x}_j)$.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Define the degree of a logical statement as the maximum number of
+      variables involved in any monomial after we apply the substitutions
+      defined above. Give an embedding and kernel that separates a dataset where
+      $y_i = 1$ if and only if some logical statements of degree 3 is true
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+  \end{homeworkProblem}
+  
+  %----------------------------------------------------------------------------------------
+  % PROBLEM 4
+  %----------------------------------------------------------------------------------------
+  \begin{homeworkProblem}
+    Download the training and test datasets from the website for the Reuters
+    data. The first column is the response variable and the rest are the counts
+    of each term in the dictionary for each document.
+    
+    \begin{homeworkSection}
+      Tune a linear SVM with the raw counts as the design matrix and tune with
+      5-fold cross validation
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Apply the tf-idf transformation and then tune a linear SVM with this as
+      the design matrix, again with 5-fold cross validation.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Tune logistic regression to these and tune it with 5-fold cross
+      validation.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+    \begin{homeworkSection}
+      Construct scores for each of these methods for the test set (this should
+      be $\mathbf{x}_i^T\bm{\beta})$, and construct the ROC and PR curves for
+      them.
+      \vspace{10pt}
+      
+      \problemAnswer{
+        
+      }
+    \end{homeworkSection}
+    
+  \end{homeworkProblem}
+  %\newpage
+  %\begin{appendices} 
+  %\end{appendices}
+  %\bibliographystyle{unsrt}
+  %\bibliography{refs}
+  
+  %----------------------------------------------------------------------------------------
+
+\end{document}
