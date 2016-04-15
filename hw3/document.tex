@@ -494,9 +494,6 @@
       5-fold cross validation
       \vspace{10pt}
       
-      \problemAnswer{
-        
-      }
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -504,9 +501,6 @@
       the design matrix, again with 5-fold cross validation.
       \vspace{10pt}
       
-      \problemAnswer{
-        
-      }
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -514,9 +508,6 @@
       validation.
       \vspace{10pt}
       
-      \problemAnswer{
-        
-      }
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -526,8 +517,157 @@
       \vspace{10pt}
       
       \problemAnswer{
+        We select the range of tuning parameters to be $\log
+        C=\mbox{range}(-1,7)$ (where larger $C$ means less regularization) for
+        both SVC and logistic regression and select the best one with a 5-fold
+        cross validation. The training and testing scores of the 4 classifiers
+        are shown in Table.~\ref{table:comparison}. The ROC and PR curves are
+        shown in Figure~\ref{fig:roc_pr}. It appears that all the classifiers
+        perform pretty well and training with design matrix after tf-idf
+        transformation is advantageous.
         
+        \begin{table}[!t]
+          \renewcommand{\arraystretch}{1.3}
+          \caption{Comparison of different classifier-design matrix.}
+          \label{table:comparison}
+          \centering
+          \begin{tabular}{c|ccc}
+            \hline
+            Classifier-Design Matrix & $\hat{C}$ & Training score &
+            Test score
+            \\
+            \hline
+            SVC-Raw & $1$ & 0.9838 & 0.9882 \\
+            SVC-tf-idf & $10$ & 0.9871 & 0.9904 \\
+            LogReg-Raw & $10^3$ & 0.9862 & 0.9865 \\
+            LogReg-tf-idf & $10^6$ & 0.9874 & 0.9910 \\
+            \hline
+          \end{tabular}
+        \end{table}
+        
+        \begin{figure}[htb]
+          \centering
+          \begin{minipage}[b]{0.45\columnwidth}
+            \centering
+            \centerline{\includegraphics[width=8cm]{./figs/roc.png}}
+            \centerline{(a) ROC}\medskip
+          \end{minipage}
+          \hfill
+          \begin{minipage}[b]{0.45\columnwidth}
+            \centering
+            \centerline{\includegraphics[width=8cm]{./figs/pr.png}}
+            \centerline{(b) PR}\medskip
+          \end{minipage}
+          \caption{Model performances.}
+          \label{fig:roc_pr}
+        \end{figure}
+        
+        The source code for this simulation is as follows:
       }
+\begin{lstlisting}[language=Python]
+import pandas as pd
+import numpy as np
+import timeit
+import sys
+
+from sklearn import linear_model
+from sklearn.svm import SVC
+from sklearn.cross_validation import KFold
+from sklearn.grid_search import GridSearchCV
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.metrics import precision_recall_curve, roc_curve
+
+# Import the training file
+df = pd.read_csv('train_mat.csv') 
+#n,d = df.shape
+X_train_raw = df.values[:, 1 :]
+y_train = df.values[:, 0]
+n, d = X_train_raw.shape
+
+# Evaluate the tf-idf transformation on the counts
+transformer = TfidfTransformer()
+X_train_tfidf = transformer.fit_transform(X_train_raw)
+
+# Import the testing file
+df = pd.read_csv('test_mat.csv') # Import the datafile
+X_test_raw = df.values[:, 1 :]
+y_test = df.values[:, 0]
+
+X_test_tfidf = transformer.fit_transform(X_test_raw)
+
+# Construct classifier objects for cross validation
+cv = KFold(n, n_folds=5)
+C_range = np.logspace(-1, 7, 9) # Range of Parameter C, larger C means less regularization
+
+classifier_svc = SVC(kernel='linear') # The linear svm classifier on the raw counts
+classifier_logreg = linear_model.LogisticRegression() # The logistic classifier
+
+# Tune the classifiers and evaluate their performances
+case = 0
+
+precision = dict()
+recall = dict()
+fpr = dict()
+tpr = dict()
+
+for classifier in [classifier_svc, classifier_logreg]:
+    for X_train, X_test in [(X_train_raw, X_test_raw), (X_train_tfidf, X_test_tfidf)]:
+        start_time = timeit.default_timer()
+
+        print("Tuning case {0}...".format(case))
+
+        grid = GridSearchCV(classifier, param_grid=dict(C=C_range), cv=cv, verbose=1, n_jobs=4)
+        grid.fit(X_train, y_train)
+
+        print(" - The best parameters are {0} with a score of {1}".format(grid.best_params_, grid.best_score_))
+        print(" - The score on the test set is {0}".format(grid.score(X_test, y_test)))
+        
+        y_score = grid.best_estimator_.decision_function(X_test)
+        precision[case], recall[case], _ = precision_recall_curve(y_test, y_score)
+        fpr[case], tpr[case], _ = roc_curve(y_test, y_score)
+        
+        print(" - Elapsed time is {0}".format(timeit.default_timer() - start_time))
+        sys.stdout.flush()
+        
+        case = case + 1
+        
+# Visualization
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+\%matplotlib qt
+
+axis_font = {'size':'20'}
+mpl.rcParams['xtick.labelsize'] = 16
+mpl.rcParams['ytick.labelsize'] = 16
+
+labels = ['SVC-raw', 'SVC-tfidf', 'LogReg-raw', 'LogReg-tfidf']
+line_specs = ['b-', 'b--', 'r-', 'r--']
+
+# The PR curve
+plt.figure()
+for case in range(4):
+    plt.plot(recall[case], precision[case], line_specs[case], label=labels[case], linewidth=2)
+
+plt.xlim([0.0, 1.0])
+plt.ylim([0.9, 1.05])
+plt.grid()
+plt.xlabel('Recall',  **axis_font)
+plt.ylabel('Precision',  **axis_font)
+plt.legend(loc="lower left", prop={'size':16})
+
+# The ROC curve
+plt.figure()
+for case in range(4):
+    plt.plot(fpr[case], tpr[case], line_specs[case], label=labels[case], linewidth=2)
+
+#plt.plot([0, 1], [0, 1], 'k--', linewidth=2)
+plt.xlim([0.0, 1.0])
+plt.ylim([0.9, 1.05])
+plt.grid()
+plt.xlabel('False Positive Rate',  **axis_font)
+plt.ylabel('True Positive Rate',  **axis_font)
+plt.legend(loc="lower right", prop={'size':16})
+\end{lstlisting}
     \end{homeworkSection}
     
   \end{homeworkProblem}
