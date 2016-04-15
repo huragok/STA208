@@ -31,6 +31,8 @@
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage[toc,page]{appendix}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \lstset{
     %numbers=left,
@@ -272,7 +274,29 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        Note that $l(\bm{\beta};y_i,\mathbf{x}_i) =
+        f(y_i\mathbf{x}_i^T\bm{\beta})$, where $f(x) = (1 - x)_+^2$. Since
+        \begin{align}
+          \dv{f}{x} = \left\{
+            \begin{array}{ll}
+              -2(1-x) & x < 1 \\
+              0 & x \geq 1 \\
+            \end{array}
+          \right.
+        \end{align}
+        therefore $f(x)$ is smooth. Consequently, we have
+        \begin{align}
+          \dv{l}{\bm{\beta}} &= f'(y_i\mathbf{x}_i^T\bm{\beta})y_i\mathbf{x}_i
+          \notag \\ 
+          &= \left\{
+            \begin{array}{ll}
+              -2(1-y_i\mathbf{x}_i^T\bm{\beta})y_i\mathbf{x}_i &
+              y_i\mathbf{x}_i^T\bm{\beta} < 1 \\
+              0 & y_i\mathbf{x}_i^T\bm{\beta} \geq 1 \\
+            \end{array}
+          \right.
+        \end{align}
+        which is also continuous.
       }
     \end{homeworkSection}
     
@@ -283,7 +307,25 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        \begin{algorithm}
+          \caption{Sequential Optimization and Grouping of MBMS based on
+          Weighted Sum Efficiency}
+          \label{alg:wse_greedy}
+          \begin{algorithmic}[1]
+            \State Initialize $\bm{\beta} = \bm{\beta}_0$. Define the objective
+            function $l(\bm{\beta}) = (1/n)\sum_{i=1}^n
+            l(\bm{\beta};y_i,\mathbf{x}_i) + \lambda \|\bm{\beta}\|_2^2.$ 
+            \Repeat
+              \State Evaluate the gradient descent direction $\Delta\bm{\beta} =
+              -\sum_{i=1}^n (1/n)dl(\bm{\beta};y_i,\mathbf{x}_i)/d\bm{\beta} -
+              2\lambda\bm{\beta}$
+              \State Choose a step with exact line search, i.e. $\hat{t} =
+              \arg\min_{t\geq 0} l(\bm{\beta} + t\Delta\bm{\beta})$
+              \State Update $\bm{\beta}:=\bm{\beta} +
+              \hat{t}\Delta\bm{\beta}$
+            \Until {Stopping criterion is satisfied.}
+          \end{algorithmic}
+        \end{algorithm}
       }
     \end{homeworkSection}
       
@@ -296,7 +338,25 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        Substitute $\mathbf{x}_i$ with $\mathbf{z}_i$ and $\bm{\beta} =
+        \mathbf{Z}^T\bm{\gamma}$, we have
+        \begin{align}
+          l(\bm{\gamma};y_i, \mathbf{z}_i) = (1-y_i\mathbf{z}_i^T\bm{\beta})_+^2
+          = (1-y_i\mathbf{z}_i^T\mathbf{Z}^T\bm{\gamma})_+^2 =
+          (1-y_i\mathbf{k}_i^T\bm{\gamma})_+^2
+        \end{align}
+        where $\mathbf{k}_i$ is the $i$-th column of $\mathbf{K}$. On the other
+        hand,
+        \begin{align}
+          \|\bm{\gamma}\|_2^2 = \bm{\gamma}^T\mathbf{Z}\mathbf{Z}^T\bm{\gamma} =
+          \bm{\gamma}^T\mathbf{K}\bm{\gamma}
+        \end{align}
+        Consequently, \eqref{eq:mod_svm} can be rewritten as
+        \begin{align}
+          \min_{\bm{\gamma}\in\mathbb{R}^n} \frac{1}{n}\sum_{i=1}^n
+          (1-y_i\mathbf{k}_i^T\bm{\gamma})_+^2   + \lambda \bm{\gamma}^T\mathbf{K}\bm{\gamma}.
+          \label{eq:mod_svm_kernel}
+        \end{align}
       }
     \end{homeworkSection}
     
@@ -318,7 +378,9 @@
       \vspace{10pt}
       
       \problemAnswer{
-      
+       \begin{align}
+        f(\mathbf{x}) = x_1 x_2 + x_3
+       \end{align}
       }
     \end{homeworkSection}
     
@@ -329,8 +391,17 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
-      }
+        The embedding is defined as
+        \begin{align}
+          \mathbf{z} = \Phi(\mathbf{x}) = \left[
+            \begin{array}{c}
+              x_1x_2 \\
+              x_3
+            \end{array}
+          \right]
+        \end{align}
+        and a separating hyperplane for $\mathbf{z}_i$ is simply $z_1 + z_2 =
+        0.5$ }
     \end{homeworkSection}
       
     \begin{homeworkSection}
@@ -339,7 +410,12 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        The kernel is defined as
+        \begin{align}
+          k(\mathbf{x}_i, \mathbf{x}_j) =
+          \Phi(\mathbf{x}_i)^T\Phi(\mathbf{x}_j) = x_{i,1}x_{i,2}x_{j,1}x_{j,2}
+          + x_{i,3}x_{j,3}
+        \end{align}
       }
     \end{homeworkSection}
 
@@ -350,7 +426,9 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        \begin{align}
+          f(\mathbf{x}) = (x_1 + x_2)x_3x_4 = x_1x_3x_4 + x_2x_3x_4
+        \end{align}
       }
     \end{homeworkSection}
     
@@ -361,8 +439,17 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
-      }
+        The embedding is defined as
+        \begin{align}
+          \mathbf{z} = \Phi(\mathbf{x}) = \left[
+            \begin{array}{c}
+              x_1x_3x_4 \\
+              x_2x_3x_4
+            \end{array}
+          \right]
+        \end{align}
+        and a separating hyperplane for $\mathbf{z}_i$ is simply $z_1 + z_2 =
+        0.5$ }
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -371,7 +458,13 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        The kernel is defined as
+        \begin{align}
+          k(\mathbf{x}_i, \mathbf{x}_j) =
+          \Phi(\mathbf{x}_i)^T\Phi(\mathbf{x}_j) = x_{i,1}x_{i,3}x_{i,4}
+          x_{j,1}x_{j,3}x_{j,4} + x_{i,2}x_{i,3}x_{i,4}
+          x_{j,2}x_{j,3}x_{j,4}
+        \end{align}
       }
     \end{homeworkSection}
     
