@@ -226,7 +226,7 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        Xingtai Li, Guicheng Wu, Wenhao Wu.
       }
     \end{homeworkSection}
     
@@ -235,7 +235,7 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        Where should a taxi driver in New York City pick up passenger?
       }
       
     \end{homeworkSection}
@@ -245,7 +245,21 @@
       \vspace{10pt}
       
       \problemAnswer{
-        
+        \begin{itemize}
+          \item Objective: Given the current location and time of a taxi driver
+          in NYC, we want to come up with some locations where the driver has
+          better chance of picking up a passenger and will gain more profits.
+          \item Data set: The dataset we have considered is from {\em data.gov},
+          including Green Taxi Trip Data from 2013 to 2015. Each taxi in dataset
+          has twenty attributes such as pick up or drop off time and location.
+          There are about seventy thousands driving records for each year.
+          \item Methodology: We want to implement a Bayesian space temporal
+          analysis to model the pattern of pick-up and drop-off location based
+          on our dataset. A regression model is also included to predict the
+          distribution of the driver's benefit. As a result, the driver is
+          recommended to a nearby location where there is a better chance of
+          picking up a passenger and gain more profits.
+        \end{itemize}
       }
     \end{homeworkSection}
     
@@ -372,14 +386,15 @@
     0$ or $x_j > 0$) is the same as ($x_i + x_j > 0$).
       
     \begin{homeworkSection}
-      Suppose that $y_i = 1$ if and only if ($x_1 = 1$ and $x_2 = 1$) or $x_3 =
-      1$. Write a function $f(\mathbf{x})$ such that $f(\mathbf{x}) = 1$ if and
-      only if $y_i$.
+      Suppose that $y_i = 1$ if and only if ($x_{i,1} = 1$ and $x_{i,2} = 1$) or
+      $x_{i,3} = 1$ and $y_i=0$ otherwise. Write a polynomial
+      function $f(\mathbf{x}_i)$ such that $f(\mathbf{x}_i) > 0$ if and only if
+      $y_i=1$.
       \vspace{10pt}
       
       \problemAnswer{
        \begin{align}
-        f(\mathbf{x}) = x_1 x_2 + x_3
+        f(\mathbf{x}_i) = x_{i,1} x_{i,2} + x_{i,3}
        \end{align}
       }
     \end{homeworkSection}
@@ -387,21 +402,24 @@
     \begin{homeworkSection}
       Define an embedding of $\mathbf{x}$ such that the dataset has a separating
       hyperplane, and write an equation for the separating hyperplane as a
-      function of $\mathbf{z}_i = \Phi(\mathbf{x}_i)$.
+      function of $\mathbf{z}_i=\Psi(\mathbf{x}_i)$. Specifically, consider any
+      dataset that is consistent with this rule ($y_i=1$ iff this rule holds)
+      then your separating hyperplane should separate the positive from negative
+      examples.
       \vspace{10pt}
       
       \problemAnswer{
         The embedding is defined as
         \begin{align}
-          \mathbf{z} = \Phi(\mathbf{x}) = \left[
+          \mathbf{z}_i = \Phi(\mathbf{x}_i) = \left[
             \begin{array}{c}
-              x_1x_2 \\
-              x_3
+              x_{i,1}x_{i,2} \\
+              x_{i,3}
             \end{array}
           \right]
         \end{align}
-        and a separating hyperplane for $\mathbf{z}_i$ is simply $z_1 + z_2 =
-        0.5$ }
+        and a separating hyperplane for $\mathbf{z}_i$ is simply $z_{i,1} +
+        z_{i,2} = 0.5$ }
     \end{homeworkSection}
       
     \begin{homeworkSection}
@@ -420,14 +438,16 @@
     \end{homeworkSection}
 
     \begin{homeworkSection}
-      Suppose that $y_i = 1$ if and only if ($x_1 = 1$ or $x_2 = 1$) and ($x_3 =
-      1$ and $x_4 = 1$). Write a function $f(\mathbf{x})$ such that
-      $f(\mathbf{x}) > 0$ if and only if $y_i$.
+      Suppose that $y_i = 1$ if and only if ($x_{i,1} = 1$ or $x_{i,2} = 1$) and
+      ($x_{i,3} = 1$ and $x_{i,4} = 1$) and $y_i=0$ otherwise. Write a
+      polynomial function $f(\mathbf{x}_i)$ such that $f(\mathbf{x}_i) > 0$ if
+      and only if $y_i=1$.
       \vspace{10pt}
       
       \problemAnswer{
         \begin{align}
-          f(\mathbf{x}) = (x_1 + x_2)x_3x_4 = x_1x_3x_4 + x_2x_3x_4
+          f(\mathbf{x}_i) = (x_{i,1} + x_{i,2})x_{i,3}x_{i,4} =
+          x_{i,1}x_{i,3}x_{i,4} + x_{i,2}x_{i,3}x_{i,4}
         \end{align}
       }
     \end{homeworkSection}
@@ -435,21 +455,21 @@
     \begin{homeworkSection}
       Define an embedding of $\mathbf{x}$ such that this new dataset has a
       separating hyperplane, and write an equation for the separating hyperplane
-      as a function of $\mathbf{z}_i = \Phi(\mathbf{x}_i)$.
+      as a function of $\mathbf{z}_i = \Phi(\mathbf{x}_i)$, as you did in (b).
       \vspace{10pt}
       
       \problemAnswer{
         The embedding is defined as
         \begin{align}
-          \mathbf{z} = \Phi(\mathbf{x}) = \left[
+          \mathbf{z}_i = \Phi(\mathbf{x}_i) = \left[
             \begin{array}{c}
-              x_1x_3x_4 \\
-              x_2x_3x_4
+              x_{i,1}x_{i,3}x_{i,4} \\
+              x_{i,2}x_{i,3}x_{i,4}
             \end{array}
           \right]
         \end{align}
-        and a separating hyperplane for $\mathbf{z}_i$ is simply $z_1 + z_2 =
-        0.5$ }
+        and a separating hyperplane for $\mathbf{z}_i$ is simply $z_{i,1} +
+        z_{i,2} = 0.5$ }
     \end{homeworkSection}
     
     \begin{homeworkSection}
@@ -469,14 +489,55 @@
     \end{homeworkSection}
     
     \begin{homeworkSection}
+      For simplicity let $p = 3$ (if you did it more generally then great!).
       Define the degree of a logical statement as the maximum number of
       variables involved in any monomial after we apply the substitutions
       defined above. Give an embedding and kernel that separates a dataset where
-      $y_i = 1$ if and only if some logical statements of degree 3 is true
+      $y_i = 1$ if and only if some logical statements of degree 3 is true. For
+      example, a possible statement of degree 3 is $x_1 = 1$ and $x_2 = 1$ and
+      $x_3 = 0$, which would be encoded as the polynomial $x_1x_2(1 - x_3) =
+      x_1x_2 - x_1x_2x_3$, so $y_i = 1\{x_1x_2 −x_1x_2x_3 >0\}$ (i.e. the binary
+      response variable is 1 iff the statement is true). You must provide an
+      embedding that separates the positive and negative cases for any such
+      logical statement (of degree 3).
       \vspace{10pt}
       
       \problemAnswer{
-        
+        Suppose that $y_i = 1$ if and only if $x_{i,1} = 0$ and
+        ($x_{i,2} = 1$ or $x_{i,3} = 0$) and $x_{i, 4} = 1$ and $y_i = 0$
+        otherwise. Such a logical statement can be encoded as plynomial
+        \begin{align}
+          f(\mathbf{x}_i) &= (1 - x_{i,1})[x_{i,2} +
+          (1-x_{i,3})]x_{i,4} \notag \\
+          &= (1 - x_{i,1})[x_{i,2}x_{i,4} + x_{i,4} - x_{i,3}x_{i,4}] \notag \\
+          &= x_{i,2}x_{i,4} + x_{i,4} - x_{i,3}x_{i,4} - x_{i,1}x_{i,2}x_{i,4} -
+          x_{i,1}x_{i,4} + x_{i,1}x_{i,3}x_{i,4}
+        \end{align}
+        Corespondingly, the embedding is defined as
+        \begin{align}
+          \mathbf{z}_i = \Phi(\mathbf{x}_i) = \left[
+            \begin{array}{c}
+              x_{i,2}x_{i,4} \\
+              x_{i,4} \\
+              x_{i,3}x_{i,4} \\
+              x_{i,1}x_{i,2}x_{i,4} \\
+              x_{i,1}x_{i,4} \\
+              x_{i,1}x_{i,3}x_{i,4}
+            \end{array}
+          \right]
+        \end{align}
+        and a separating hyperplane for $\mathbf{z}_i$ is simply $z_{i,1} +
+        z_{i,2} - z_{i,3} - z_{i,4} - z_{i,5} + z_{i,6} = 0.5$. The kernel is
+        defined as
+        \begin{align}
+          k(\mathbf{x}_i, \mathbf{x}_j) & =
+          \Phi(\mathbf{x}_i)^T\Phi(\mathbf{x}_j) \notag \\
+          & =
+          x_{i,2}x_{i,4}x_{j,2}x_{j,4} + x_{i,4}x_{j,4} + x_{i,3}x_{i,4}x_{j,3}x_{j,4} +
+          x_{i,1}x_{i,2}x_{i,4}x_{j,1}x_{j,2}x_{j,4} \notag\\
+          & + x_{i,1}x_{i,4}x_{j,1}x_{j,4} + 
+          x_{i,1}x_{i,3}x_{i,4}x_{j,1}x_{j,3}x_{j,4}.
+        \end{align}
       }
     \end{homeworkSection}
   \end{homeworkProblem}
