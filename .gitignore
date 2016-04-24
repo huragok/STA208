@@ -16,8 +16,8 @@ raw
 # Datasets
 airfoil_self_noise.dat
 transfusion.data
-train_mat.csv
-test_mat.csv
+spmats/
+densemats/
 
 # Notebook checkpoints/
 *.ipynb_checkpoints/

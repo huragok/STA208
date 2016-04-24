@@ -599,7 +599,7 @@
             \\
             \hline
             SVC-Raw & $1$ & 0.9838 & 0.9882 \\
-            SVC-tf-idf & $10$ & 0.9871 & 0.9904 \\
+            SVC-tf-idf & $10$ & 0.9872 & 0.9904 \\
             LogReg-Raw & $10^3$ & 0.9862 & 0.9865 \\
             LogReg-tf-idf & $10^6$ & 0.9874 & 0.9910 \\
             \hline
@@ -638,21 +638,25 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics import precision_recall_curve, roc_curve
 
+from scipy.sparse import csr_matrix
+
 # Import the training file
-df = pd.read_csv('train_mat.csv') 
-#n,d = df.shape
-X_train_raw = df.values[:, 1 :]
-y_train = df.values[:, 0]
-n, d = X_train_raw.shape
+df_train = pd.read_csv('spmats/train_Xsp.csv', header=None)
+df_test = pd.read_csv('spmats/test_Xsp.csv', header=None)
+d = max(df_train.values[:, 1].max(), df_test.values[:, 1].max()) + 1
+n_train, n_test = df_train.values[:, 0].max() + 1, df_test.values[:, 0].max() + 1
+
+X_train_raw = csr_matrix((df_train.values[:, 2], (df_train.values[:, 0], df_train.values[:, 1])), shape=(n_train, d), dtype="float64")
+y_train = pd.read_csv('spmats/train_y.csv', header=None).values[:, 0] 
+n = X_train_raw.shape[0]
 
 # Evaluate the tf-idf transformation on the counts
 transformer = TfidfTransformer()
 X_train_tfidf = transformer.fit_transform(X_train_raw)
 
 # Import the testing file
-df = pd.read_csv('test_mat.csv') # Import the datafile
-X_test_raw = df.values[:, 1 :]
-y_test = df.values[:, 0]
+X_test_raw = csr_matrix((df_test.values[:, 2], (df_test.values[:, 0], df_test.values[:, 1])), shape=(n_test, d), dtype="float64")
+y_test = pd.read_csv('spmats/test_y.csv', header=None).values[:, 0] 
 
 X_test_tfidf = transformer.fit_transform(X_test_raw)
 
