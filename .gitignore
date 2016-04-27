@@ -18,6 +18,7 @@ airfoil_self_noise.dat
 transfusion.data
 spmats/
 densemats/
+exam.dat
 
 # Notebook checkpoints/
 *.ipynb_checkpoints/
