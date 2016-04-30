@@ -128,6 +128,29 @@ in Fig.~\ref{fig:tree_structure}.
   \label{fig:tree_structure}
 \end{figure}
 
+Nest we try some more rigorous (mathematically) machine learning techniques.
+Firslty a discriminative model. Specifically, we applied the
+logistic-regression method where the regularization parameter $C$ is chosen with
+CV. The results are shown in Fig.~\ref{fig:logreg_tune}. 
+
+We would also like to see whether the performance can be improved with kernel
+techniques and that promotes sparsities. We try to tune a SVM classifier with rbf kernel,
+in which both the regularization parameter $C$ and the kernel parameter $\gamma$
+are chosen with CV. The results are shown in Fig.~\ref{fig:svc_tune}. The SVC
+achieve a tiny-slightly better test score of $0.96$ which should not be
+considered as a significant performance gain. We select $C=1$ and $\gamma=1$ for
+our SVM classifier.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\textwidth]{figs/svc_tuning.pdf}
+  \caption{Tuning the SVM classifier.}
+  \label{fig:svc_tune}
+\end{figure}
+
+
+
+
 \section{Numerical Results and Conclusion}
 
 
