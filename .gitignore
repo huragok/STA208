@@ -22,3 +22,8 @@ exam.dat
 
 # Notebook checkpoints/
 *.ipynb_checkpoints/
+
+# exam1 submission
+*.p
+training.py
+testing.py

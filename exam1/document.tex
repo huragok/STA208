@@ -131,7 +131,16 @@ in Fig.~\ref{fig:tree_structure}.
 Nest we try some more rigorous (mathematically) machine learning techniques.
 Firslty a discriminative model. Specifically, we applied the
 logistic-regression method where the regularization parameter $C$ is chosen with
-CV. The results are shown in Fig.~\ref{fig:logreg_tune}. 
+CV. The results are shown in Fig.~\ref{fig:logreg_tune}. It appears that
+logistic regression does not work as good as other classifiers with a test score
+of 0.944 for $C=1$.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\textwidth]{figs/logreg_tuning.pdf}
+  \caption{Tuning the logistic regression classifier.}
+  \label{fig:logreg_tune}
+\end{figure}
 
 We would also like to see whether the performance can be improved with kernel
 techniques and that promotes sparsities. We try to tune a SVM classifier with rbf kernel,
@@ -148,12 +157,49 @@ our SVM classifier.
   \label{fig:svc_tune}
 \end{figure}
 
+The classifiers we have tried so far are tuned with cross-validation, and as we
+can see the choice of a single best classifier is usually unclear. To reduce the
+variance of our classifier, we also tried the ensemble learning technique of
+random forest. We fix the \texttt{max\_depth}=3 and trained a random forest of
+10 trees. The resulting test score is $0.968$ which turns out to be a little
+higher than the other classifiers.
 
-
+As opposed to the frequentist approaches mentioned above, an arguably more
+insightful and principled way of regularization is the Bayesian
+approach.
+In this study, we also tried two Bayesian classifiers, namely the relevance
+vector machine (RVM) and the variational logistic
+regression (VLR) implemented by Amazasp Shaumyan. For the RVM
+classifier, we adopt the rbf kernel with $\gamma=1$. The RVM and VLR achieve
+test scores of 0.961 and 0.944, respectively, which is almost the same as their
+non-Bayesian counterparts.
 
 \section{Numerical Results and Conclusion}
+The performance of all the classifiers mentioned in the last section are
+summarized in Table~\ref{table:comparison}. We decide to use the random forest
+of 10 trees with max depth of 3 as our final classifier. A score of around 0.96
+is expected from this classifier.
 
-
+\begin{table}[!t]
+  \renewcommand{\arraystretch}{1.3}
+  \caption{Test performances of different classifiers.}
+  \label{table:comparison}
+  \centering
+  \begin{tabular}{c|ccccc}
+    \hline
+    Classifier & false positive & false negative & precision & reall & score
+    \\
+    \hline
+    KNN & 0.06383 & 0.03055 & 0.9382 & 0.9695 & 0.9573 \\
+    Decision Tree & 0.08511 &  0.02648 & 0.9196 & 0.9735 & 0.9521 \\
+    Log-Reg & 0.06738 & 0.04888 & 0.9338 & 0.9511 & 0.9444 \\
+    SVM & 0.05674 & 0.03055 & 0.9447 & 0.9695 & 0.9599 \\
+    Random Forest & 0.05674 & 0.02444 & 0.9450 & 0.9756 & 0.9638 \\
+    RVM & 0.06738 & 0.02851 & 0.9351 & 0.9715 & 0.9573 \\
+    Variational Log-Reg & 0.06738 & 0.04888 & 0.9338 & 0.9511 & 0.9444 \\
+    \hline
+  \end{tabular}
+\end{table}
 
 %   BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
