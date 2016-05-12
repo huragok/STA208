@@ -1,0 +1,6 @@
+postgres: CREATE DATABASE nyc_taxi
+
+zcat trip_data_3.csv.zip | head -n 20 >> trip_data_3.csv
+zcat trip_fare_3.csv.zip | head -n 20 >> trip_fare_3.csv
+
+head -n 2000 yellow_tripdata_2009-12.csv >> test.csv
