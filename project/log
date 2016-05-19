@@ -3,4 +3,26 @@ postgres: CREATE DATABASE nyc_taxi
 zcat trip_data_3.csv.zip | head -n 20 >> trip_data_3.csv
 zcat trip_fare_3.csv.zip | head -n 20 >> trip_fare_3.csv
 
-head -n 2000 yellow_tripdata_2009-12.csv >> test.csv
+head -n 2000 yellow_tripdata_2014-01.csv >> test.csv
+head -n 2000 green_tripdata_2014-01.csv >> test1.csv
+
+sudo -i -u postgres
+psql (organon)
+list all databases: \list or \l
+list all tables: \dt
+\connect nyc_taxi
+list data: SELECT * FROM trip;
+drop table: DROP TABLE IF EXISTS trip;
+where the database is: SHOW data_directory;
+
+install pyshp
+
+sudo cp ~/Documents/UC\ Davis/2016\ Spring/STA\ 208/Homeworks/project/NTA\ map/geo_export_d2bec86b-a3e8-4047-b785-24286f7718ab.shp /var/lib/postgresql/
+mv geo_export_d2bec86b-a3e8-4047-b785-24286f7718ab.shp nta.shp
+remember also to copy and rename shx and dbf files
+
+shp2pgsql -I -s 4269 nta.shp | psql -d nyc_taxi
+
+ALTER TABLE nta
+    ALTER shape_area TYPE decimal
+(no need)
