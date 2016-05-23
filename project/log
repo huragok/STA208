@@ -3,8 +3,8 @@ postgres: CREATE DATABASE nyc_taxi
 zcat trip_data_3.csv.zip | head -n 20 >> trip_data_3.csv
 zcat trip_fare_3.csv.zip | head -n 20 >> trip_fare_3.csv
 
-head -n 2000 yellow_tripdata_2014-01.csv >> test.csv
-head -n 2000 green_tripdata_2014-01.csv >> test1.csv
+head -n 20000 yellow_tripdata_2014-01.csv >> test.csv
+head -n 20000 green_tripdata_2014-01.csv >> test1.csv
 
 sudo -i -u postgres
 psql (organon)
@@ -26,3 +26,73 @@ shp2pgsql -I -s 4269 nta.shp | psql -d nyc_taxi
 ALTER TABLE nta
     ALTER shape_area TYPE decimal
 (no need)
+
+\d+ nta: list column names
+
+CREATE TABLE trip_by_ct AS
+SELECT trip_id, ct1.gid AS pickup_ct_gid, ct2.gid AS dropoff_ct_gid
+FROM trip, ct AS ct1, ct AS ct2
+WHERE ST_Intersects(pickup_lonlat, ct1.geom) AND ST_Intersects(dropoff_lonlat, ct2.geom);
+
+
+
+ALTER TABLE trip ADD COLUMN pickup_ct_gid integer NOT NULL DEFAULT 0;
+ALTER TABLE trip DROP COLUMN pickup_ct_gid;
+
+INSERT INTO trip (pickup_ct_gid)
+
+# By census tracts
+CREATE TABLE pickup_ct AS
+SELECT trip_id, gid 
+FROM trip, ct 
+WHERE ST_Intersects(pickup_lonlat, geom);
+
+CREATE TABLE dropoff_ct AS
+SELECT trip_id, gid 
+FROM trip, ct 
+WHERE ST_Intersects(dropoff_lonlat, geom);
+
+CREATE TABLE trip_ct AS 
+SELECT pickup_ct.trip_id, pickup_ct.gid AS pickup_gid, dropoff_ct.gid AS dropoff_gid
+FROM pickup_ct, dropoff_ct
+WHERE pickup_ct.trip_id=dropoff_ct.trip_id;
+
+DROP table pickup_ct;
+DROP table dropoff_ct;
+
+# By NTAs
+CREATE TABLE pickup_nta AS
+SELECT trip_id, gid 
+FROM trip, nta 
+WHERE ST_Intersects(pickup_lonlat, geom);
+# ~10sec
+
+CREATE TABLE dropoff_nta AS
+SELECT trip_id, gid 
+FROM trip, nta 
+WHERE ST_Intersects(dropoff_lonlat, geom);
+
+CREATE TABLE trip_nta AS 
+SELECT pickup_nta.trip_id, pickup_nta.gid AS pickup_gid, dropoff_nta.gid AS dropoff_gid
+FROM pickup_nta, dropoff_nta
+WHERE pickup_nta.trip_id=dropoff_nta.trip_id;
+
+DROP table pickup_nta;
+DROP table dropoff_nta;
+
+
+SELECT pickup_gid, COUNT(trip_id)
+FROM trip_ct
+GROUP BY pickup_gid
+ORDER BY pickup_gid;
+
+SELECT dropoff_gid, COUNT(trip_id)
+FROM trip_ct
+WHERE pickup_gid=1
+GROUP BY dropoff_gid
+ORDER BY dropoff_gid
+
+SELECT gid, ST_AsText(ST_SIMPLIFY(geom, 0.0001))
+FROM ct
+WHERE gid=1;
+
