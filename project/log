@@ -96,3 +96,11 @@ SELECT gid, ST_AsText(ST_SIMPLIFY(geom, 0.0001))
 FROM ct
 WHERE gid=1;
 
+SELECT pickup_gid, EXTRACT(doy FROM pickup_datetime) AS pickup_doy, EXTRACT(hour FROM pickup_datetime) AS pickup_hour, COUNT(*)
+FROM trip, trip_nta
+WHERE trip_nta.trip_id=trip.trip_id
+GROUP BY pickup_gid, pickup_doy, pickup_hour; 
+
+SHOW data_directory
+sudo du -hs /var/lib/postgresql/9.3/main/base
+
