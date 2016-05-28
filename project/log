@@ -96,11 +96,154 @@ SELECT gid, ST_AsText(ST_SIMPLIFY(geom, 0.0001))
 FROM ct
 WHERE gid=1;
 
+CREATE TABLE pickup_count AS
 SELECT pickup_gid, EXTRACT(doy FROM pickup_datetime) AS pickup_doy, EXTRACT(hour FROM pickup_datetime) AS pickup_hour, COUNT(*)
 FROM trip, trip_nta
 WHERE trip_nta.trip_id=trip.trip_id
-GROUP BY pickup_gid, pickup_doy, pickup_hour; 
+GROUP BY pickup_gid, pickup_doy, pickup_hour
+ORDER BY pickup_gid, pickup_doy, pickup_hour; 
 
 SHOW data_directory
 sudo du -hs /var/lib/postgresql/9.3/main/base
 
+wenhaowu@Loki:~$ sudo mkdir /database
+wenhaowu@Loki:~$ sudo vim /etc/fstab
+wenhaowu@Loki:~$ mount /database
+mount: according to mtab, /dev/sdb1 is mounted on /media/wenhaowu/Database
+mount failed
+wenhaowu@Loki:~$ unmount /media/wenhaowu/Database/
+No command 'unmount' found, did you mean:
+ Command 'umount' from package 'mount' (main)
+unmount: command not found
+wenhaowu@Loki:~$ umount /media/wenhaowu/Database/
+wenhaowu@Loki:~$ mount /database
+mount: only root can mount /dev/sdb1 on /database
+wenhaowu@Loki:~$ sudo mount /database/
+wenhaowu@Loki:~$ ls -al /database/
+total 28
+drwx------  4 wenhaowu wenhaowu  4096 May 25 15:19 .
+drwxr-xr-x 26 root     root      4096 May 25 15:19 ..
+drwx------  2 root     root     16384 May 25 14:33 lost+found
+drwx------  4 wenhaowu wenhaowu  4096 May 25 15:19 .Trash-1000
+wenhaowu@Loki:~$ sudo chown -R postgres:postgres /database/
+[sudo] password for wenhaowu: 
+wenhaowu@Loki:~$ ls -al /database/
+ls: cannot open directory /database/: Permission denied
+wenhaowu@Loki:~$ sudo ls -al /database/
+total 28
+drwx------  4 postgres postgres  4096 May 25 15:19 .
+drwxr-xr-x 26 root     root      4096 May 25 15:19 ..
+drwx------  2 postgres postgres 16384 May 25 14:33 lost+found
+drwx------  4 postgres postgres  4096 May 25 15:19 .Trash-1000
+wenhaowu@Loki:~$ sudo -i -u postgres 
+\postgres@Loki:~$ 
+postgres@Loki:~$ /usr/lib/postgresql/9.3/bin/initdb -D /database/
+The files belonging to this database system will be owned by user "postgres".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "en_US.UTF-8".
+The default database encoding has accordingly been set to "UTF8".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+initdb: directory "/database" exists but is not empty
+It contains a lost+found directory, perhaps due to it being a mount point.
+Using a mount point directly as the data directory is not recommended.
+Create a subdirectory under the mount point.
+postgres@Loki:~$ mkdir /database/postgresql/
+postgres@Loki:~$ /usr/lib/postgresql/9.3/bin/initdb -D /database/postgresql/
+The files belonging to this database system will be owned by user "postgres".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "en_US.UTF-8".
+The default database encoding has accordingly been set to "UTF8".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+fixing permissions on existing directory /database/postgresql ... ok
+creating subdirectories ... ok
+selecting default max_connections ... 100
+selecting default shared_buffers ... 128MB
+creating configuration files ... ok
+creating template1 database in /database/postgresql/base/1 ... ok
+initializing pg_authid ... ok
+initializing dependencies ... ok
+creating system views ... ok
+loading system objects' descriptions ... ok
+creating collations ... ok
+creating conversions ... ok
+creating dictionaries ... ok
+setting privileges on built-in objects ... ok
+creating information schema ... ok
+loading PL/pgSQL server-side language ... ok
+vacuuming database template1 ... ok
+copying template1 to template0 ... ok
+copying template1 to postgres ... ok
+syncing data to disk ... ok
+
+WARNING: enabling "trust" authentication for local connections
+You can change this by editing pg_hba.conf or using the option -A, or
+--auth-local and --auth-host, the next time you run initdb.
+
+Success. You can now start the database server using:
+
+    /usr/lib/postgresql/9.3/bin/postgres -D /database/postgresql/
+or
+    /usr/lib/postgresql/9.3/bin/pg_ctl -D /database/postgresql/ -l logfile start
+
+postgres@Loki:~$ sudo service postgresql stop
+[sudo] password for postgres: 
+Sorry, try again.
+[sudo] password for postgres: 
+^CSorry, try again.
+[sudo] password for postgres: 
+sudo: 2 incorrect password attempts
+postgres@Loki:~$ sudo -i service postgresql stop
+[sudo] password for postgres: 
+postgres@Loki:~$ service postgresql stop
+ * Stopping PostgreSQL 9.3 database server                                                     [ OK ] 
+postgres@Loki:~$ nano /etc/postgresql/9.3/main/postgresql.conf 
+postgres@Loki:~$ service postgresql start
+ * Starting PostgreSQL 9.3 database server                                                     [ OK ] 
+postgres@Loki:~$ psql
+Password: 
+psql: FATAL:  password authentication failed for user "postgres"
+postgres@Loki:~$ psql
+Password: 
+\psql: FATAL:  password authentication failed for user "postgres"
+postgres@Loki:~$ psql
+Password: 
+psql: FATAL:  password authentication failed for user "postgres"
+postgres@Loki:~$ psql
+Password: 
+psql: FATAL:  password authentication failed for user "postgres"
+postgres@Loki:~$ psql
+Password: 
+psql: FATAL:  password authentication failed for user "postgres"
+postgres@Loki:~$ logout
+wenhaowu@Loki:~$ sudo -u postgres psql postgres
+Password: 
+psql: FATAL:  password authentication failed for user "postgres"
+wenhaowu@Loki:~$ sudo -u postgres psql
+Password: 
+psql: fe_sendauth: no password supplied
+wenhaowu@Loki:~$ sudo -i -u postgres 
+postgres@Loki:~$ service postgresql stop
+ * Stopping PostgreSQL 9.3 database server                                                     [ OK ] 
+postgres@Loki:~$ /usr/lib/postgresql/9.3/bin/postgres -D /database/postgresql/
+LOG:  database system was shut down at 2016-05-25 16:02:20 PDT
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  autovacuum launcher started
+LOG:  database system is ready to accept connections
+
+change password
+create database
+CREATE EXTENSION postgis;
+CREATE EXTENSION
+nyc_taxi=# CREATE EXTENSION postgis_topology;
+
+ALTER TABLE pickup_count ALTER pickup_doy TYPE integer;
+ALTER TABLE pickup_count ALTER pickup_hour TYPE integer;
+(no need)
