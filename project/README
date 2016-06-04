@@ -1,0 +1,119 @@
+===== Data Import =====
+Setup the default directory of PostgreSQL to /database, which is mounted on sdb1 (Samsung 850 pro 256GB) (http://climber2002.github.io/blog/2015/02/07/install-and-configure-postgresql-on-ubuntu-14-dot-04/):
+1. sudo mkdir /database
+2. sudo vim /etc/fstab, add "/dev/sdb1   /database   ext4    defaults    0   0"
+3. sudo mount /database/
+4. sudo chown -R postgres:postgres /database/
+5. sudo -i -u postgres
+6. postgres@Loki:~$ mkdir /database/postgresql/
+7. postgres@Loki:~$ /usr/lib/postgresql/9.3/bin/initdb -D /database/postgresql/
+8. postgres@Loki:~$ service postgresql stop
+9. sudo gedit /etc/postgresql/9.3/main/postgresql.conf, change data_directory = '/var/lib/postgresql/9.3/main' -> data_directory = '/database/postgresql'
+10. restart
+
+Configure PostgreSQL:
+1. sudo -i -u postgres
+2. psql
+3. change password: \password postgres <organon>
+
+Create the nyc_taxi database:
+1. CREATE DATABASE nyc_taxi;
+2. \connect nyc_taxi
+3. CREATE EXTENSION postgis;
+
+Create table "trip": 
+1. run CreateTableTrip.ipynb
+
+Create table "nta": 
+1. sudo cp ./datasets/nta_2010/geo_export_d2bec86b-a3e8-4047-b785-24286f7718ab.dbf /var/lib/postgresql/nta.dbf
+sudo cp ./datasets/nta_2010/geo_export_d2bec86b-a3e8-4047-b785-24286f7718ab.prj /var/lib/postgresql/nta.prj
+sudo cp ./datasets/nta_2010/geo_export_d2bec86b-a3e8-4047-b785-24286f7718ab.shp /var/lib/postgresql/nta.shp
+sudo cp ./datasets/nta_2010/geo_export_d2bec86b-a3e8-4047-b785-24286f7718ab.shx /var/lib/postgresql/nta.shx
+2. sudo -i -u postgres
+3. shp2pgsql -I -s 4269 nta.shp | psql -d nyc_taxi
+
+Create table "ct": 
+1. sudo cp ./datasets/ct_2010/geo_export_670644cc-4c81-49e9-9d6d-fb574f649fff.dbf /var/lib/postgresql/ct.dbf
+sudo cp ./datasets/ct_2010/geo_export_670644cc-4c81-49e9-9d6d-fb574f649fff.prj /var/lib/postgresql/ct.prj
+sudo cp ./datasets/ct_2010/geo_export_670644cc-4c81-49e9-9d6d-fb574f649fff.shp /var/lib/postgresql/ct.shp
+sudo cp ./datasets/ct_2010/geo_export_670644cc-4c81-49e9-9d6d-fb574f649fff.shx /var/lib/postgresql/ct.shx
+2. sudo -i -u postgres
+3. shp2pgsql -I -s 4269 ct.shp | psql -d nyc_taxi
+
+Create table "day_info":
+1. run CreateTableDayInfo.ipynb
+
+
+===== Create intermediate PostgreSQL tables for later use =====
+Map the pickup and dropoff of each trip to the gid corresponding to the 195 NTAs:
+CREATE TABLE pickup_nta AS
+SELECT trip_id, gid 
+FROM trip, nta 
+WHERE ST_Intersects(pickup_lonlat, geom);
+
+CREATE TABLE dropoff_nta AS
+SELECT trip_id, gid 
+FROM trip, nta 
+WHERE ST_Intersects(dropoff_lonlat, geom);
+
+CREATE TABLE trip_nta AS 
+SELECT pickup_nta.trip_id, pickup_nta.gid AS pickup_gid, dropoff_nta.gid AS dropoff_gid
+FROM pickup_nta, dropoff_nta
+WHERE pickup_nta.trip_id=dropoff_nta.trip_id;
+
+DROP table pickup_nta;
+DROP table dropoff_nta;
+
+Map the pickup and dropoff of each trip to the gid corresponding to the 2166 census tracks:
+CREATE TABLE pickup_ct AS
+SELECT trip_id, gid 
+FROM trip, ct 
+WHERE ST_Intersects(pickup_lonlat, geom);
+
+CREATE TABLE dropoff_ct AS
+SELECT trip_id, gid 
+FROM trip, ct 
+WHERE ST_Intersects(dropoff_lonlat, geom);
+
+CREATE TABLE trip_ct AS 
+SELECT pickup_ct.trip_id, pickup_ct.gid AS pickup_gid, dropoff_ct.gid AS dropoff_gid
+FROM pickup_ct, dropoff_ct
+WHERE pickup_ct.trip_id=dropoff_ct.trip_id;
+
+DROP table pickup_ct;
+DROP table dropoff_ct;
+
+Count the number of pickups per day of the year per hour per NTA:
+CREATE TABLE pickup_count_nta AS
+SELECT pickup_gid, EXTRACT(doy FROM pickup_datetime) AS pickup_doy, EXTRACT(hour FROM pickup_datetime) AS pickup_hour, COUNT(*)
+FROM trip, trip_nta
+WHERE trip_nta.trip_id=trip.trip_id
+GROUP BY pickup_gid, pickup_doy, pickup_hour
+ORDER BY pickup_gid, pickup_doy, pickup_hour; 
+
+Count the number of pickups per day of the year per hour per census track:
+CREATE TABLE pickup_count_ct AS
+SELECT pickup_gid, EXTRACT(doy FROM pickup_datetime) AS pickup_doy, EXTRACT(hour FROM pickup_datetime) AS pickup_hour, COUNT(*)
+FROM trip, trip_ct
+WHERE trip_ct.trip_id=trip.trip_id
+GROUP BY pickup_gid, pickup_doy, pickup_hour
+ORDER BY pickup_gid, pickup_doy, pickup_hour; 
+
+===== Data Processing and Analysis =====
+Assemble the intermediate pandas.DataFrame files for visualization and training/validation/testing:
+1. run AssembleDataFramePickup.ipynb
+
+Plot the density map by NTA with time-series analysis:
+1. run AnalyzeDataFrame.ipynb
+
+Plot the density map by census tracks, both, yellow-only and green-only:
+1. run AnalyzeDataFrameCT.ipynb
+
+Assemble the intermediate pandas.DataFrame files for visualized tests (3 specified doys, 24 hours, 26 densest NTAs):
+1. run AssembleDataFramePickupTest.ipynb
+
+Plot the density map by NTA for the visualized tests:
+1. run AnalyzeDataFrameTest.ipynb
+
+
+

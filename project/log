@@ -247,3 +247,81 @@ nyc_taxi=# CREATE EXTENSION postgis_topology;
 ALTER TABLE pickup_count ALTER pickup_doy TYPE integer;
 ALTER TABLE pickup_count ALTER pickup_hour TYPE integer;
 (no need)
+
+CREATE TABLE pickup_count_by_hour AS
+SELECT pickup_gid, EXTRACT(hour FROM pickup_datetime) AS pickup_hour, COUNT(*) / 365.0 AS count_mean_pickup
+FROM trip, trip_nta
+WHERE trip_nta.trip_id=trip.trip_id
+GROUP BY pickup_gid, pickup_hour
+ORDER BY pickup_gid, pickup_hour; 
+
+CREATE TABLE dropoff_count_by_hour AS
+SELECT dropoff_gid, EXTRACT(hour FROM dropoff_datetime) AS dropoff_hour, COUNT(*) / 365.0 AS count_mean_dropoff
+FROM trip, trip_nta
+WHERE trip_nta.trip_id=trip.trip_id
+GROUP BY dropoff_gid, dropoff_hour
+ORDER BY dropoff_gid, dropoff_hour; 
+
+CREATE TABLE count_by_hour AS
+SELECT *
+FROM pickup_count_by_hour
+FULL OUTER JOIN dropoff_count_by_hour
+ON pickup_gid=dropoff_gid AND pickup_hour=dropoff_hour;
+
+DROP TABLE pickup_count_by_hour;
+DROP TABLE dropoff_count_by_hour;
+
+ALTER TABLE count_by_hour ALTER pickup_hour TYPE integer;
+ALTER TABLE count_by_hour ALTER dropoff_hour TYPE integer;
+
+SELECT dropoff_gid, COUNT(trip_id)
+FROM trip_nta
+WHERE pickup_gid=1
+GROUP BY dropoff_gid;
+
+
+############################
+ALTER TABLE pickup_count RENAME TO pickup_count_nta;
+
+CREATE TABLE pickup_count_ct AS
+SELECT gid, EXTRACT(doy FROM pickup_datetime) AS pickup_doy, EXTRACT(hour FROM pickup_datetime) AS pickup_hour, COUNT(*)
+FROM trip, pickup_ct
+WHERE pickup_ct.trip_id=trip.trip_id
+GROUP BY gid, pickup_doy, pickup_hour
+ORDER BY gid, pickup_doy, pickup_hour; 
+
+ALTER TABLE pickup_count_ct RENAME gid TO pickup_gid;
+
+CREATE TABLE pickup_count_ct_yellow AS
+SELECT gid, EXTRACT(doy FROM pickup_datetime) AS pickup_doy, EXTRACT(hour FROM pickup_datetime) AS pickup_hour, COUNT(*)
+FROM trip, pickup_ct
+WHERE pickup_ct.trip_id=trip.trip_id AND is_yellow
+GROUP BY gid, pickup_doy, pickup_hour
+ORDER BY gid, pickup_doy, pickup_hour; 
+
+CREATE TABLE pickup_count_ct_green AS
+SELECT gid, EXTRACT(doy FROM pickup_datetime) AS pickup_doy, EXTRACT(hour FROM pickup_datetime) AS pickup_hour, COUNT(*)
+FROM trip, pickup_ct
+WHERE pickup_ct.trip_id=trip.trip_id AND NOT is_yellow
+GROUP BY gid, pickup_doy, pickup_hour
+ORDER BY gid, pickup_doy, pickup_hour; 
+
+convert -coalesce density_pred_doy=20.gif density_pred_doy=20.png
+convert -coalesce density_true_doy=20.gif density_true_doy=20.png
+
+convert -coalesce density_pred_doy=100.gif density_pred_doy=100.png
+convert -coalesce density_true_doy=100.gif density_true_doy=100.png
+
+convert -coalesce density_pred_doy=313.gif density_pred_doy=313.png
+convert -coalesce density_true_doy=313.gif density_true_doy=313.png
+
+CREATE TABLE dropoff_ct AS
+SELECT trip_id, gid 
+FROM trip, ct
+WHERE ST_Intersects(dropoff_lonlat, geom);
+
+CREATE TABLE trip_ct AS
+SELECT pickup_ct.trip_id, pickup_ct.gid AS pickup_gid, dropoff_ct.gid AS dropoff_gid
+FROM pickup_ct, dropoff_ct
+WHERE pickup_ct.trip_id=dropoff_ct.trip_id;
+

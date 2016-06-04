@@ -30,6 +30,7 @@ training.py
 testing.py
 
 # project
-project/ct_2010/
-project/nta_2010
+project/datasets/
+project/intermediate_files/
+project/slides/document/figs/
 *#
