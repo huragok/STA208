@@ -249,7 +249,6 @@ ALTER TABLE pickup_count ALTER pickup_hour TYPE integer;
 (no need)
 
 
-
 SELECT dropoff_gid, COUNT(trip_id)
 FROM trip_nta
 WHERE pickup_gid=1

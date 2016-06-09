@@ -104,7 +104,7 @@ Assemble the intermediate pandas.DataFrame files for visualization and training/
 1. run AssembleDataFramePickup.ipynb
 
 Plot the density map by NTA with time-series analysis:
-1. run AnalyzeDataFrame.ipynb
+1. run AnalyzeDataFramePickup.ipynb
 
 Plot the density map by census tracks, both, yellow-only and green-only:
 1. run AnalyzeDataFrameCT.ipynb
@@ -113,7 +113,7 @@ Assemble the intermediate pandas.DataFrame files for visualized tests (3 specifi
 1. run AssembleDataFramePickupTest.ipynb
 
 Plot the density map by NTA for the visualized tests:
-1. run AnalyzeDataFrameTest.ipynb
+1. run AnalyzeDataFramePickupTest.ipynb
 
 
 

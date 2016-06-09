@@ -11,7 +11,7 @@ raw
 *.png
 
 # Homework handouts and compiled pdf files
-*.pdf
+# *.pdf
 
 # Datasets
 *.csv
